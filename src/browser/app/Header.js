@@ -21,6 +21,10 @@ const Header = ({ viewer }) => (
       <FormattedMessage {...linksMessages.home} />
     </Link>
     <Space x={2} />
+    <Link bold inverted to="/cards">
+      <FormattedMessage {...linksMessages.cards} />
+    </Link>
+    <Space x={2} />
     <Link bold inverted to="/users">
       <FormattedMessage {...linksMessages.users} />
     </Link>

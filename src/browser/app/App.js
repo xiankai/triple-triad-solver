@@ -16,6 +16,7 @@ import { connect } from 'react-redux';
 
 // Pages
 import FieldsPage from '../fields/FieldsPage';
+import CardsPage from '../cards/CardsPage';
 import UsersPage from '../users/UsersPage';
 import HomePage from '../home/HomePage';
 import IntlPage from '../intl/IntlPage';
@@ -72,6 +73,7 @@ const App = ({ currentLocale, currentTheme }) => (
         <Header />
         <Box style={styles.page}>
           <Match exactly pattern="/" component={HomePage} />
+          <Match pattern="/cards" component={CardsPage} />
           <Match pattern="/fields" component={FieldsPage} />
           <Match pattern="/users" component={UsersPage} />
           <Match pattern="/intl" component={IntlPage} />

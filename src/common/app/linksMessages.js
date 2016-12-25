@@ -6,6 +6,10 @@ const LinkMessages = defineMessages({
     defaultMessage: 'Intl',
     id: 'app.links.intl',
   },
+  cards: {
+    defaultMessage: 'Cards',
+    id: 'app.links.cards',
+  },
   fields: {
     defaultMessage: 'Fields',
     id: 'app.links.fields',
