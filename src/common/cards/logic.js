@@ -2,7 +2,7 @@ const cards = require('./cards.json');
 
 // const cards = (new Array(10))
 //   .fill(null)
-//   .map(() => 
+//   .map(() =>
 //     (new Array(4))
 //       .fill(null)
 //       .map(() => Math.ceil(Math.random() * 9))
@@ -24,7 +24,7 @@ const cards = require('./cards.json');
 // ];
 
 // inputs required
-// 
+//
 // 1) entire player's deck (or x)
 // 2) entire opponent's deck (or y)
 // ruleset
@@ -34,32 +34,32 @@ const cards = require('./cards.json');
 // 1 million possibilities (but actually limited by the only 1 4/5* card rule)
 // yC5 where 5 <= y <= 8
 // 56 possibilities
-// 
+//
 // 1) 5 cards from player
 // 2) 5 cards from opponent
 
 // rulesets
-// All Open 
+// All Open
 // y = 5
 // 1 possibility
-// 
+//
 // Three Open
 // yC2 where 2 <= y <= 5
 // 10 possibilities
-// 
+//
 // Sudden Death
 // Recursion nightmare
-// 
+//
 // Random, Swap
 // calculate on fly
-// 
+//
 // Order
 // take away 5!
 // resulting in 43 million possibilities
-// 
+//
 // Chaos
 // as normal (we cannot tell in advance what will be selected for Chaos)
-// 
+//
 // Reverse, Fallen Ace, Same, Plus, Ascension, Descension
 // only changes the outcome
 
@@ -76,7 +76,7 @@ const cards = require('./cards.json');
 // 1x1 possibilities
 // 5!*5!*9!
 // 5.2 billion possibilities XD
-// 
+//
 // A1 a2 B3 b4 C5 c6 D7 d8 E9 = ??? win/draw/loss
 
 const computeBoardStandardResult = (grid, placedCard, position, owner) => {
@@ -159,7 +159,7 @@ const computeCurrentBoardScore = (grid) => {
   // the numerical advantage in terms of cards, instead of board positioning
   const currentScore = grid.reduce((score, card) => {
     if (card) {
-      return score + (card.owner === 'player' ? 1 : -1 );
+      return score + (card.owner === 'player' ? 1 : -1);
     }
 
     return score;
