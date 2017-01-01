@@ -2,16 +2,65 @@
 import type { Action, CardsState } from '../types';
 
 const initialState = {
-  playersCards: [1, 5, 10, 15, 20], //(new Array(5)).fill(null),
-  opponentsCards: [100, 80, 60, 40, 20], //(new Array(5)).fill(null),
-  placedCards: (new Array(9)).fill(null),
+  selectedCard: null,
+  playersCards: (new Array(5)).fill(null),
+  opponentsCards: (new Array(5)).fill(null),
+  placedCards: (new Array(9)).fill({
+    card: null,
+    isPlayer: null,
+  }),
 };
 
 const reducer = (
   state: CardsState = initialState,
   action: Action,
 ): CardsState => {
+  // Because it's called from the createInitialState.
+  if (!action) return state;
+
   switch (action.type) {
+    case 'TAKE_CARD': {
+      const { playersCards, opponentsCards } = state;
+      const { isPlayer, card } = action.payload;
+
+      if (isPlayer) {
+        const index = playersCards.indexOf(card);
+
+        return {
+          ...state,
+          playersCards: {
+            ...playersCards.slice(0, index),
+            ...playersCards.slice(index),
+          },
+        };
+      } else {
+        const index = opponentsCards.indexOf(card);
+
+        return {
+          ...state,
+          opponentsCards: {
+            ...opponentsCards.slice(0, index),
+            ...opponentsCards.slice(index),
+          },
+        };
+      }
+    }
+
+    case 'PLACE_CARD': {
+      const { isPlayer, card, position } = action.payload;
+      const { placedCards } = state;
+
+      placedCards[position] = {
+        isPlayer,
+        card,
+      };
+
+      return {
+        ...state,
+        placedCards,
+      };
+    }
+
     case 'POPULATE_DECK': {
       const { isPlayer, cards } = action.payload;
 
@@ -24,39 +73,6 @@ const reducer = (
         return {
           ...state,
           opponentsCards: cards,
-        };
-      }
-    }
-
-    case 'PLACE_CARD': {
-      const { isPlayer, card, position } = action.payload;
-      let { playersCards, opponentsCards, placedCards } = state;
-
-      placedCards[position] = card;
-
-      if (isPlayer) {
-        const index = playersCards.indexOf(card);
-        playersCards = {
-          ...playersCards.slice(0, index),
-          ...playersCards.slice(index),
-        };
-
-        return {
-          playersCards,
-          opponentsCards,
-          placedCards,
-        };
-      } else {
-        const index = opponentsCards.indexOf(card);
-        opponentsCards = {
-          ...opponentsCards.slice(0, index),
-          ...opponentsCards.slice(index),
-        };
-
-        return {
-          playersCards,
-          opponentsCards,
-          placedCards,
         };
       }
     }

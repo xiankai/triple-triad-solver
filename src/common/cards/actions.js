@@ -1,18 +1,27 @@
 /* @flow */
 import type { Action } from '../types';
 
-export const placeCard = (isPlayer: boolean, position: number, card: number): Action => ({
-  type: 'PLACE_CARD',
+export const takeCard = (isPlayer: boolean, card: number): Action => ({
+  type: 'TAKE_CARD',
   payload: {
     isPlayer,
-    position,
     card,
   },
 });
 
-export const populateDeck = (cards: Array): Action => ({
+export const placeCard = (isPlayer: boolean, card: number, position: number): Action => ({
   type: 'PLACE_CARD',
   payload: {
+    isPlayer,
+    card,
+    position,
+  },
+});
+
+export const populateDeck = (isPlayer: boolean, cards: Array): Action => ({
+  type: 'POPULATE_DECK',
+  payload: {
+    isPlayer,
     cards,
   },
 });

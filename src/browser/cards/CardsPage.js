@@ -3,9 +3,10 @@ import type { State } from '../../common/types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { populateDeck } from '../../common/cards/actions';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
-import cards from '../../common/cards/cards.json';
+import { populateDeck } from '../../common/cards/actions';
 
 import {
   PageHeader,
@@ -15,22 +16,25 @@ import {
   Flex,
   Box
 } from '../app/components';
-import Card from './Card';
+import DeckCard from './DeckCard';
+import BoardCard from './BoardCard';
 
-const CardsPage = ({ cards: { playersCards, opponentsCards, placedCards } }) => (
+const CardsPage = ({ playersCards, opponentsCards, placedCards, populateDeck }) => (
   <View>
     <Title message="Triple Triad Solver" />
     <PageHeader
       description="Get the latest scoop on your winning odds against Rowena"
       heading="Triple Triad Solver"
     />
+    <button onClick={() => populateDeck(true, [0, 1, 5, 10, 15])}>Populate Player Deck</button>
+    <button onClick={() => populateDeck(false, [80, 60, 40, 20, 10])}>Populate Opponent Deck</button>
     <Flex>
       <Box
         auto
         p={1}
       >
         {
-          playersCards.map((card, i) => <Card key={i} {...cards[card]} />)
+          playersCards.map((card, i) => <DeckCard key={i} card={card} isPlayer />)
         }
       </Box>
       <Box
@@ -38,7 +42,7 @@ const CardsPage = ({ cards: { playersCards, opponentsCards, placedCards } }) => 
         p={1}
       >
         {
-          placedCards.map((card, i) => <Card key={i} {...cards[card]} />)
+          placedCards.map((placedCard, i) => <BoardCard key={i} {...placedCard} position={i} />)
         }
       </Box>
       <Box
@@ -46,7 +50,7 @@ const CardsPage = ({ cards: { playersCards, opponentsCards, placedCards } }) => 
         p={1}
       >
         {
-          opponentsCards.map((card, i) => <Card key={i} {...cards[card]} />)
+          opponentsCards.map((card, i) => <DeckCard key={i} card={card} isPlayer={false} />)
         }
       </Box>
     </Flex>
@@ -54,11 +58,11 @@ const CardsPage = ({ cards: { playersCards, opponentsCards, placedCards } }) => 
 );
 
 
-export default connect(
-  (state: State) => ({
-    cards: state.cards,
-  }),
-  {
-    populateDeck,
-  }
-)(CardsPage);
+export default DragDropContext(HTML5Backend)(
+  connect(
+    (state: State) => state.cards,
+    {
+      populateDeck,
+    }
+  )(CardsPage)
+);
