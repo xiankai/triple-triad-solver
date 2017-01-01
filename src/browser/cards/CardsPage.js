@@ -35,6 +35,7 @@ const CardsPage = ({
 
   populateDeck,
   resetGame,
+  clearHistory,
   undo,
   redo,
 }) => (
@@ -52,7 +53,7 @@ const CardsPage = ({
         <Grid col={4}>
           {
             (past + future) > 0 &&
-            <Button onClick={resetGame} backgroundColor="info">Reset</Button>
+            <Button onClick={() => resetGame() && clearHistory()} backgroundColor="info">Reset</Button>
           }
         </Grid>
         <Grid col={4}>
@@ -114,14 +115,17 @@ const CardsPage = ({
 
 export default DragDropContext(HTML5Backend)(
   connect(
-    (state: State) => ({
-      ...state.cards.present,
-      past: state.cards.past.length,
-      future: state.cards.future.length,
-    }),
+    (state: State) => {
+      return {
+        ...state.cards.present,
+        past: state.cards.past.length,
+        future: state.cards.future.length,
+      };
+    },
     {
       populateDeck,
       resetGame,
+      clearHistory: ActionCreators.clearHistory,
       undo: ActionCreators.undo,
       redo: ActionCreators.redo,
     }

@@ -6899,13 +6899,13 @@ redux-persist@4.0.0-beta1:
     lodash "^4.11.1"
     lodash-es "^4.16.0"
 
-redux-undo@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/redux-undo/-/redux-undo-0.6.1.tgz#ff407749b8f468bead636e413819e92c0982eeca"
+redux-undo@beta:
+  version "1.0.0-beta9-5"
+  resolved "https://registry.yarnpkg.com/redux-undo/-/redux-undo-1.0.0-beta9-5.tgz#6a7cf4dfb068bb8f7b692cf08fb3e143999959fb"
   dependencies:
-    redux "^3.0.2"
+    redux "^3.5.2"
 
-redux@^3.0.2, redux@^3.0.4, redux@^3.2.0:
+redux@^3.0.4, redux@^3.2.0, redux@^3.5.2:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.6.0.tgz#887c2b3d0b9bd86eca2be70571c27654c19e188d"
   dependencies:

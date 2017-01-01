@@ -38,7 +38,7 @@ const configureReducer = (initialState: Object) => {
   let reducer = combineReducers({
     app,
     auth,
-    cards: undoable(cards, { filter: includeAction(['TAKE_CARD', 'PLACE_CARD']), clearHistoryType: 'RESET_GAME' }),
+    cards: undoable(cards, { filter: includeAction(['TAKE_CARD', 'PLACE_CARD']) }),
     config,
     device,
     fields,
