@@ -3,8 +3,9 @@ import React from 'react';
 
 import cards from '../../common/cards/cards.json';
 
-const Card = ({ card }) => {
+const Card = ({ card, isPlayer }) => {
   const { topValue, leftValue, bottomValue, rightValue } = cards[card] || {};
+  
   return (
     <div
       style={{
@@ -12,6 +13,8 @@ const Card = ({ card }) => {
         height: 120,
         border: '1px dotted red',
         width: '100%',
+        background: card ? (isPlayer ? 'blue' : 'red') : 'transparent',
+        color: 'white',
         // flex: 1,
       }}
     >

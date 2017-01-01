@@ -1,4 +1,4 @@
-const cards = require('./cards.json');
+import cards from './cards.json';
 
 // const cards = (new Array(10))
 //   .fill(null)
@@ -61,7 +61,7 @@ const cards = require('./cards.json');
 // as normal (we cannot tell in advance what will be selected for Chaos)
 //
 // Reverse, Fallen Ace, Same, Plus, Ascension, Descension
-// only changes the outcome
+// only grid the outcome
 
 // then
 // 9 rounds
@@ -79,60 +79,60 @@ const cards = require('./cards.json');
 //
 // A1 a2 B3 b4 C5 c6 D7 d8 E9 = ??? win/draw/loss
 
-const computeBoardStandardResult = (grid, placedCard, position, owner) => {
+export const computeBoardStandardResult = (grid, placedCard, position, isPlayer) => {
   const {
-    topValue: top,
-    rightValue: right,
-    leftValue: bottom,
-    bottomValue: left,
+    topValue,
+    rightValue,
+    leftValue,
+    bottomValue,
   } = cards[placedCard];
 
+  const matches = [];
+  const newGrid = grid.slice();
+
   // place card
-  grid[position] = {
+  newGrid[position] = {
     card: placedCard,
-    owner,
+    isPlayer,
   };
 
-  // compare my top to their bottom
-  if (position < 6 && grid[position - 3]) {
-    const { card, owner: comparedOwner } = grid[position - 3];
-
-    if (owner !== comparedOwner && top > cards[card].bottomValue) {
-      grid[position - 3].owner = owner;
-    }
+  if (position < 6) {
+    matches.push([bottomValue, position + 3, 'topValue']);
   }
 
-  // compare my right to their left
-  if (position % 3 < 2 && grid[position + 1]) {
-    const { card, owner: comparedOwner } = grid[position + 1];
-
-    if (owner !== comparedOwner && right > cards[card].leftValue) {
-      grid[position + 1].owner = owner;
-    }
+  if (position % 3 < 2) {
+    matches.push([rightValue, position + 1, 'leftValue']);
   }
 
-  // compare my bottom to their top
-  if (position > 2 && grid[position + 3]) {
-    const { card, owner: comparedOwner } = grid[position + 3];
-
-    if (owner !== comparedOwner && bottom > cards[card].topValue) {
-      grid[position + 3].owner = owner;
-    }
+  if (position > 2) {
+    matches.push([topValue, position - 3, 'bottomValue']);
   }
 
-  // compare my left to their right
-  if (position % 3 > 0 && grid[position - 1]) {
-    const { card, owner: comparedOwner } = grid[position - 1];
-
-    if (owner !== comparedOwner && left > cards[card].rightValue) {
-      grid[position - 1].owner = owner;
-    }
+  if (position % 3 > 0) {
+    matches.push([leftValue, position - 1, 'rightValue']);
   }
 
-  return grid;
+  matches.forEach(([val, comparedPos, comparedSide]) => {
+    if (!grid[comparedPos] || !grid[comparedPos].card) {
+      // no card placed
+      return;
+    }
+
+    const { card, isPlayer: comparedOwner } = grid[comparedPos];
+
+    // is an opponent and we can overpower them
+    if (isPlayer !== comparedOwner && parseInt(val, 10) > cards[card][comparedSide]) {
+      newGrid[comparedPos] = {
+        card,
+        isPlayer,
+      };
+    }
+  });
+
+  return newGrid;
 };
 
-const getFinalResult = (grid, playersTurn) => {
+export const getFinalResult = (grid, playersTurn) => {
   const playersPlacedCards = grid.filter(({ owner }) => owner === 'player');
 
   if (playersTurn) {
@@ -154,7 +154,7 @@ const getFinalResult = (grid, playersTurn) => {
   return 'loss';
 };
 
-const computeCurrentBoardScore = (grid) => {
+export const computeCurrentBoardScore = (grid) => {
   // naive implementation of calculating board score
   // the numerical advantage in terms of cards, instead of board positioning
   const currentScore = grid.reduce((score, card) => {
@@ -169,7 +169,7 @@ const computeCurrentBoardScore = (grid) => {
 };
 
 // grid is a length 8 array with holes where no card has been placed yet
-const calculate = (grid, playerDeck, opponentDeck, playersTurn, depth = 1) => {
+export const calculate = (grid, playerDeck, opponentDeck, playersTurn, depth = 1) => {
   const calculations = {
     cards: {},
     score: {},
@@ -235,5 +235,3 @@ const calculate = (grid, playerDeck, opponentDeck, playersTurn, depth = 1) => {
 
   return calculations;
 };
-
-module.exports = calculate;

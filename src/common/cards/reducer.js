@@ -1,6 +1,8 @@
 /* @flow */
 import type { Action, CardsState } from '../types';
 
+import { computeBoardStandardResult } from './logic';
+
 const initialState = {
   selectedCard: null,
   playersCards: (new Array(5)).fill(null),
@@ -40,9 +42,9 @@ const reducer = (
         return {
           ...state,
           opponentsCards: [
-            ...opponentsCards.slice(0, index - 1),
+            ...opponentsCards.slice(0, index),
             null,
-            ...opponentsCards.slice(index),
+            ...opponentsCards.slice(index + 1),
           ],
         };
       }
@@ -52,14 +54,9 @@ const reducer = (
       const { isPlayer, card, position } = action.payload;
       const { placedCards } = state;
 
-      placedCards[position] = {
-        isPlayer,
-        card,
-      };
-
       return {
         ...state,
-        placedCards,
+        placedCards: computeBoardStandardResult(placedCards, card, position, isPlayer),
       };
     }
 
