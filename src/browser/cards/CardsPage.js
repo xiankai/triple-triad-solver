@@ -6,7 +6,12 @@ import { connect } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import { populateDeck, resetGame } from '../../common/cards/actions';
+import {
+  populateDeck,
+  resetGame,
+  undo,
+  redo,
+} from '../../common/cards/actions';
 
 import {
   PageHeader,
@@ -19,7 +24,18 @@ import {
 import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
 
-const CardsPage = ({ playersCards, opponentsCards, placedCards, populateDeck, resetGame }) => (
+const CardsPage = ({
+  playersCards,
+  opponentsCards,
+  placedCards,
+  pastState,
+  futureState,
+
+  populateDeck,
+  resetGame,
+  undo,
+  redo,
+}) => (
   <View>
     <Title message="Triple Triad Solver" />
     <PageHeader
@@ -29,6 +45,12 @@ const CardsPage = ({ playersCards, opponentsCards, placedCards, populateDeck, re
     <button onClick={() => populateDeck(true, [0, 1, 5, 10, 15])}>Populate Player Deck</button>
     <button onClick={() => populateDeck(false, [80, 60, 40, 20, 10])}>Populate Opponent Deck</button>
     <button onClick={resetGame}>Reset Game</button>
+    {
+      pastState.length > 0 && <button onClick={undo}>Undo Move</button>
+    }
+    {
+      futureState.length > 0 && <button onClick={redo}>Redo Move</button>
+    }
     <Flex>
       <Box
         auto
@@ -89,6 +111,8 @@ export default DragDropContext(HTML5Backend)(
     {
       populateDeck,
       resetGame,
+      undo,
+      redo,
     }
   )(CardsPage)
 );

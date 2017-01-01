@@ -15,12 +15,12 @@ const boxSource = {
       card,
     };
   },
-  endDrag: (props, monitor) => {
-    const { isPlayer, card, takeCard } = props;
-    if (monitor.didDrop()) {
-      takeCard(isPlayer, card);
-    }
-  },
+  // endDrag: (props, monitor) => {
+  //   const { isPlayer, card, takeCard } = props;
+  //   if (monitor.didDrop()) {
+  //     takeCard(isPlayer, card);
+  //   }
+  // },
 };
 
 const DeckCard = ({ connectDragSource, ...props }) => connectDragSource(

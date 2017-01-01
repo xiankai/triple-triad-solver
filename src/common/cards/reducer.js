@@ -4,13 +4,43 @@ import type { Action, CardsState } from '../types';
 import { computeBoardStandardResult } from './logic';
 
 const initialState = {
-  selectedCard: null,
   playersCards: (new Array(5)).fill(null),
   opponentsCards: (new Array(5)).fill(null),
   placedCards: (new Array(9)).fill({
     card: null,
     isPlayer: null,
   }),
+  pastState: [],
+  futureState: [],
+};
+
+const takeCard = (state, action) => {
+  const { playersCards, opponentsCards } = state;
+  const { isPlayer, card } = action.payload;
+
+  if (isPlayer) {
+    const index = playersCards.indexOf(card);
+
+    return {
+      ...state,
+      playersCards: [
+        ...playersCards.slice(0, index),
+        null,
+        ...playersCards.slice(index + 1),
+      ],
+    };
+  } else {
+    const index = opponentsCards.indexOf(card);
+
+    return {
+      ...state,
+      opponentsCards: [
+        ...opponentsCards.slice(0, index),
+        null,
+        ...opponentsCards.slice(index + 1),
+      ],
+    };
+  }
 };
 
 const reducer = (
@@ -21,42 +51,74 @@ const reducer = (
   if (!action) return state;
 
   switch (action.type) {
-    case 'TAKE_CARD': {
-      const { playersCards, opponentsCards } = state;
-      const { isPlayer, card } = action.payload;
-
-      if (isPlayer) {
-        const index = playersCards.indexOf(card);
-
-        return {
-          ...state,
-          playersCards: [
-            ...playersCards.slice(0, index),
-            null,
-            ...playersCards.slice(index + 1),
-          ],
-        };
-      } else {
-        const index = opponentsCards.indexOf(card);
-
-        return {
-          ...state,
-          opponentsCards: [
-            ...opponentsCards.slice(0, index),
-            null,
-            ...opponentsCards.slice(index + 1),
-          ],
-        };
-      }
-    }
+    case 'TAKE_CARD': return takeCard(state, action);
 
     case 'PLACE_CARD': {
       const { isPlayer, card, position } = action.payload;
-      const { placedCards } = state;
+      // take card as well
+      const { playersCards, opponentsCards, placedCards, pastState } = takeCard(state, action);
+
+      const previousState = {
+        playersCards: state.playersCards,
+        opponentsCards: state.opponentsCards,
+        placedCards: state.placedCards,
+      };
+
+      const savedState = {
+        playersCards,
+        opponentsCards,
+        placedCards: computeBoardStandardResult(placedCards.slice(), card, position, isPlayer),
+      };
 
       return {
         ...state,
-        placedCards: computeBoardStandardResult(placedCards, card, position, isPlayer),
+        ...savedState,
+        pastState: [...pastState, previousState],
+        futureState: [],
+      };
+    }
+
+    case 'UNDO': {
+      const { playersCards, opponentsCards, placedCards, pastState, futureState } = state;
+
+      const newPastState = pastState.slice();
+      const newFutureState = futureState.slice();
+
+      const savedState = {
+        playersCards,
+        opponentsCards,
+        placedCards,
+      };
+
+      newFutureState.push(savedState);
+
+      return {
+        ...state,
+        ...newPastState.pop(),
+        pastState: newPastState,
+        futureState: newFutureState,
+      };
+    }
+
+    case 'REDO': {
+      const { playersCards, opponentsCards, placedCards, pastState, futureState } = state;
+
+      const newPastState = pastState.slice();
+      const newFutureState = futureState.slice();
+
+      const savedState = {
+        playersCards,
+        opponentsCards,
+        placedCards,
+      };
+
+      newPastState.push(savedState);
+
+      return {
+        ...state,
+        ...newFutureState.pop(),
+        pastState: newPastState,
+        futureState: newFutureState,
       };
     }
 

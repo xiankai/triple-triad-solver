@@ -5,7 +5,7 @@ import cards from '../../common/cards/cards.json';
 
 const Card = ({ card, isPlayer }) => {
   const { topValue, leftValue, bottomValue, rightValue } = cards[card] || {};
-  
+
   return (
     <div
       style={{
@@ -13,7 +13,7 @@ const Card = ({ card, isPlayer }) => {
         height: 120,
         border: '1px dotted red',
         width: '100%',
-        background: card ? (isPlayer ? 'blue' : 'red') : 'transparent',
+        background: card !== null ? (isPlayer ? 'blue' : 'red') : 'transparent',
         color: 'white',
         // flex: 1,
       }}
