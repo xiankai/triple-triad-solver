@@ -25,3 +25,8 @@ export const populateDeck = (isPlayer: boolean, cards: Array): Action => ({
     cards,
   },
 });
+
+export const resetGame = (): Action => ({
+  type: 'RESET_GAME',
+});
+

@@ -76,6 +76,8 @@ const reducer = (
       }
     }
 
+    case 'RESET_GAME': return initialState;
+
     default:
       return state;
 
