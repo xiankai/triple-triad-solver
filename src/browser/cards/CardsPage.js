@@ -1,43 +1,23 @@
 /* @flow */
+import type { State } from '../../common/types';
 import React from 'react';
+import { connect } from 'react-redux';
+
+import { populateDeck } from '../../common/cards/actions';
+
+import cards from '../../common/cards/cards.json';
+
 import {
   PageHeader,
   Title,
   View,
 
-  Grid,
   Flex,
-  Box,
+  Box
 } from '../app/components';
+import Card from './Card';
 
-const placedCards = [
-  [
-    [1, 2, 3, 4],
-    [1, 2, 3, 4],
-    [1, 2, 3, 4],
-  ],
-  [
-    [1, 2, 3, 4],
-    [1, 2, 3, 4],
-    [1, 2, 3, 4],
-  ],
-  [
-    [1, 2, 3, 4],
-    [1, 2, 3, 4],
-    [1, 2, 3, 4],
-  ],
-];
-
-const Card = ({ dimensions: [top, left, bottom, right] }) => (
-  <Box style={{ position: 'relative', height: 120, border: '1px dotted red'}}>
-    <div style={{ position: 'absolute', top: '5%', left: '45%' }}>{top}</div>
-    <div style={{ position: 'absolute', left: '5%', top: '45%' }}>{left}</div>
-    <div style={{ position: 'absolute', bottom: '5%', left: '45%' }}>{bottom}</div>
-    <div style={{ position: 'absolute', right: '5%', top: '45%' }}>{right}</div>
-  </Box>
-);
-
-const CardsPage = () => (
+const CardsPage = ({ cards: { playersCards, opponentsCards, placedCards } }) => (
   <View>
     <Title message="Triple Triad Solver" />
     <PageHeader
@@ -45,35 +25,40 @@ const CardsPage = () => (
       heading="Triple Triad Solver"
     />
     <Flex>
-      <Box 
-        auto
-        p={1}
-      >
-      </Box>
-      <Box 
+      <Box
         auto
         p={1}
       >
         {
-          placedCards.map(column => (
-            <Grid
-              col={4}
-              p={0}
-            >
-              {
-                column.map(placedCard => <Card dimensions={placedCard} />)
-              }
-            </Grid>
-          ))
+          playersCards.map((card, i) => <Card key={i} {...cards[card]} />)
         }
       </Box>
-      <Box 
+      <Box
         auto
         p={1}
       >
+        {
+          placedCards.map((card, i) => <Card key={i} {...cards[card]} />)
+        }
+      </Box>
+      <Box
+        auto
+        p={1}
+      >
+        {
+          opponentsCards.map((card, i) => <Card key={i} {...cards[card]} />)
+        }
       </Box>
     </Flex>
   </View>
 );
 
-export default CardsPage;
+
+export default connect(
+  (state: State) => ({
+    cards: state.cards,
+  }),
+  {
+    populateDeck,
+  }
+)(CardsPage);

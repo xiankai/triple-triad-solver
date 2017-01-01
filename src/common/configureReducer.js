@@ -2,6 +2,7 @@
 import type { Action, State } from './types';
 import app from './app/reducer';
 import auth from './auth/reducer';
+import cards from './cards/reducer';
 import config from './config/reducer';
 import device from './device/reducer';
 import intl from './intl/reducer';
@@ -36,6 +37,7 @@ const configureReducer = (initialState: Object) => {
   let reducer = combineReducers({
     app,
     auth,
+    cards,
     config,
     device,
     fields,
