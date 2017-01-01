@@ -18,14 +18,6 @@ export const placeCard = (isPlayer: boolean, card: number, position: number): Ac
   },
 });
 
-export const undo = (): Action => ({
-  type: 'UNDO',
-});
-
-export const redo = (): Action => ({
-  type: 'REDO',
-});
-
 export const populateDeck = (isPlayer: boolean, cards: Array): Action => ({
   type: 'POPULATE_DECK',
   payload: {

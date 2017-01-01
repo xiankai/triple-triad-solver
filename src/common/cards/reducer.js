@@ -56,69 +56,11 @@ const reducer = (
     case 'PLACE_CARD': {
       const { isPlayer, card, position } = action.payload;
       // take card as well
-      const { playersCards, opponentsCards, placedCards, pastState } = takeCard(state, action);
+      const { placedCards } = takeCard(state, action);
 
-      const previousState = {
-        playersCards: state.playersCards,
-        opponentsCards: state.opponentsCards,
-        placedCards: state.placedCards,
-      };
-
-      const savedState = {
-        playersCards,
-        opponentsCards,
+      return {
+        ...state,
         placedCards: computeBoardStandardResult(placedCards.slice(), card, position, isPlayer),
-      };
-
-      return {
-        ...state,
-        ...savedState,
-        pastState: [...pastState, previousState],
-        futureState: [],
-      };
-    }
-
-    case 'UNDO': {
-      const { playersCards, opponentsCards, placedCards, pastState, futureState } = state;
-
-      const newPastState = pastState.slice();
-      const newFutureState = futureState.slice();
-
-      const savedState = {
-        playersCards,
-        opponentsCards,
-        placedCards,
-      };
-
-      newFutureState.push(savedState);
-
-      return {
-        ...state,
-        ...newPastState.pop(),
-        pastState: newPastState,
-        futureState: newFutureState,
-      };
-    }
-
-    case 'REDO': {
-      const { playersCards, opponentsCards, placedCards, pastState, futureState } = state;
-
-      const newPastState = pastState.slice();
-      const newFutureState = futureState.slice();
-
-      const savedState = {
-        playersCards,
-        opponentsCards,
-        placedCards,
-      };
-
-      newPastState.push(savedState);
-
-      return {
-        ...state,
-        ...newFutureState.pop(),
-        pastState: newPastState,
-        futureState: newFutureState,
       };
     }
 

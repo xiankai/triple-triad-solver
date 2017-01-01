@@ -50,6 +50,7 @@
     "comma-dangle": ["error", {
       "arrays": "always-multiline",
       "objects": "always-multiline",
+      "imports": "always-multiline",
       "functions": "ignore",
     }],
     "guard-for-in": 0,

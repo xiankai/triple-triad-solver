@@ -11,6 +11,7 @@ import todos from './todos/reducer';
 import users from './users/reducer';
 import { combineReducers } from 'redux';
 import { fieldsReducer as fields } from './lib/redux-fields';
+import undoable, { includeAction } from 'redux-undo';
 
 // stackoverflow.com/q/35622588/233902
 const resetStateOnSignOutReducer = (reducer, initialState) => (
@@ -37,7 +38,7 @@ const configureReducer = (initialState: Object) => {
   let reducer = combineReducers({
     app,
     auth,
-    cards,
+    cards: undoable(cards, { filter: includeAction(['TAKE_CARD', 'PLACE_CARD']), clearHistoryType: 'RESET_GAME' }),
     config,
     device,
     fields,

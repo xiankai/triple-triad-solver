@@ -6,11 +6,11 @@ import { connect } from 'react-redux';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 
+import { ActionCreators } from 'redux-undo';
+
 import {
   populateDeck,
   resetGame,
-  undo,
-  redo
 } from '../../common/cards/actions';
 
 import {
@@ -21,7 +21,7 @@ import {
   Button,
 
   Grid,
-  Flex
+  Flex,
 } from '../app/components';
 import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
@@ -30,8 +30,8 @@ const CardsPage = ({
   playersCards,
   opponentsCards,
   placedCards,
-  pastState,
-  futureState,
+  past,
+  future,
 
   populateDeck,
   resetGame,
@@ -51,18 +51,18 @@ const CardsPage = ({
       <Grid col={4} p={2}>
         <Grid col={4}>
           {
-            (pastState.length + futureState.length) > 0 &&
+            (past + future) > 0 &&
             <Button onClick={resetGame} backgroundColor="info">Reset</Button>
           }
         </Grid>
         <Grid col={4}>
           {
-            pastState.length > 0 && <Button onClick={undo} backgroundColor="error">Undo</Button>
+            past > 0 && <Button onClick={undo} backgroundColor="error">Undo</Button>
           }
         </Grid>
         <Grid col={4}>
           {
-            futureState.length > 0 && <Button onClick={redo} backgroundColor="success">Redo</Button>
+            future > 0 && <Button onClick={redo} backgroundColor="success">Redo</Button>
           }
         </Grid>
       </Grid>
@@ -114,12 +114,16 @@ const CardsPage = ({
 
 export default DragDropContext(HTML5Backend)(
   connect(
-    (state: State) => state.cards,
+    (state: State) => ({
+      ...state.cards.present,
+      past: state.cards.past.length,
+      future: state.cards.future.length,
+    }),
     {
       populateDeck,
       resetGame,
-      undo,
-      redo,
+      undo: ActionCreators.undo,
+      redo: ActionCreators.redo,
     }
   )(CardsPage)
 );
