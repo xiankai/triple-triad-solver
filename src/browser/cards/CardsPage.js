@@ -10,7 +10,7 @@ import {
   populateDeck,
   resetGame,
   undo,
-  redo,
+  redo
 } from '../../common/cards/actions';
 
 import {
@@ -18,8 +18,10 @@ import {
   Title,
   View,
 
-  Flex,
-  Box
+  Button,
+
+  Grid,
+  Flex
 } from '../app/components';
 import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
@@ -42,64 +44,69 @@ const CardsPage = ({
       description="Get the latest scoop on your winning odds against Rowena"
       heading="Triple Triad Solver"
     />
-    <button onClick={() => populateDeck(true, [0, 1, 5, 10, 15])}>Populate Player Deck</button>
-    <button onClick={() => populateDeck(false, [80, 60, 40, 20, 10])}>Populate Opponent Deck</button>
-    <button onClick={resetGame}>Reset Game</button>
-    {
-      pastState.length > 0 && <button onClick={undo}>Undo Move</button>
-    }
-    {
-      futureState.length > 0 && <button onClick={redo}>Redo Move</button>
-    }
     <Flex>
-      <Box
-        auto
-        p={1}
-      >
+      <Grid col={4} p={2}>
+        <Button onClick={() => populateDeck(true, [0, 1, 5, 10, 15])} backgroundColor="blue">Populate Player Deck</Button>
+      </Grid>
+      <Grid col={4} p={2}>
+        <Grid col={4}>
+          {
+            (pastState.length + futureState.length) > 0 &&
+            <Button onClick={resetGame} backgroundColor="info">Reset</Button>
+          }
+        </Grid>
+        <Grid col={4}>
+          {
+            pastState.length > 0 && <Button onClick={undo} backgroundColor="error">Undo</Button>
+          }
+        </Grid>
+        <Grid col={4}>
+          {
+            futureState.length > 0 && <Button onClick={redo} backgroundColor="success">Redo</Button>
+          }
+        </Grid>
+      </Grid>
+      <Grid col={4} p={2}>
+        <Button onClick={() => populateDeck(false, [80, 60, 40, 20, 10])} backgroundColor="red">Populate Opponent Deck</Button>
+      </Grid>
+    </Flex>
+    <Flex>
+      <Grid col={4} p={2}>
         {
           playersCards.map((card, i) =>
-            <Box
+            <Grid
               key={i}
               col={4}
-              style={{ display: 'inline-block' }}
             >
               <DeckCard key={i} card={card} isPlayer />
-            </Box>
+            </Grid>
           )
         }
-      </Box>
-      <Box
-        auto
-        p={1}
-      >
+      </Grid>
+      <Grid col={4} p={2}>
         {
           placedCards.map((placedCard, i) =>
-            <Box
+            <Grid
               key={i}
               col={4}
-              style={{ display: 'inline-block' }}
             >
               <BoardCard key={i} {...placedCard} position={i} />
-            </Box>
+            </Grid>
           )
         }
-      </Box>
-      <Box
-        auto
-        p={1}
-      >
+      </Grid>
+      <Grid col={4} p={2}>
         {
           opponentsCards.map((card, i) =>
-            <Box
+            <Grid
               key={i}
               col={4}
-              style={{ display: 'inline-block' }}
             >
               <DeckCard card={card} isPlayer={false} />
-            </Box>
+            </Grid>
           )
         }
-      </Box>
+      </Grid>
     </Flex>
   </View>
 );
