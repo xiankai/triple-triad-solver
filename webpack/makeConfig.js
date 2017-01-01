@@ -60,6 +60,7 @@ const makeConfig = (options) => {
         new RegExp('localforage.js'),
       ],
       loaders: [
+        { test: /\.json$/, loader: 'json' },
         {
           loader: 'url-loader?limit=10000',
           test: /\.(gif|jpg|png|svg)(\?.*)?$/,
