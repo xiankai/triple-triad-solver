@@ -10,7 +10,6 @@ import Card from './Card';
 const boxSource = {
   beginDrag: props => {
     const { isPlayer, card } = props;
-    console.log(`selecting ${card} card`);
     return {
       isPlayer,
       card,
@@ -18,7 +17,6 @@ const boxSource = {
   },
   endDrag: (props, monitor) => {
     const { isPlayer, card, takeCard } = props;
-    console.log(`using ${card} card`);
     if (monitor.didDrop()) {
       takeCard(isPlayer, card);
     }

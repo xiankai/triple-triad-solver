@@ -8,12 +8,12 @@ import { placeCard } from '../../common/cards/actions';
 import Card from './Card';
 
 const dropTarget = {
-  drop(props) {
-    const { isPlayer, card, position } = props;
-    console.log(props);
-    console.log(`dropping ${card} card on ${position}`);
+  drop: (props, monitor) => {
+    const { position, placeCard } = props;
+    const { isPlayer, card } = monitor.getItem();
     placeCard(isPlayer, card, position);
   },
+  canDrop: props => !props.card,
 };
 
 const BoardCard = ({ connectDropTarget, ...props }) => connectDropTarget(

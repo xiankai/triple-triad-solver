@@ -28,20 +28,22 @@ const reducer = (
 
         return {
           ...state,
-          playersCards: {
+          playersCards: [
             ...playersCards.slice(0, index),
-            ...playersCards.slice(index),
-          },
+            null,
+            ...playersCards.slice(index + 1),
+          ],
         };
       } else {
         const index = opponentsCards.indexOf(card);
 
         return {
           ...state,
-          opponentsCards: {
-            ...opponentsCards.slice(0, index),
+          opponentsCards: [
+            ...opponentsCards.slice(0, index - 1),
+            null,
             ...opponentsCards.slice(index),
-          },
+          ],
         };
       }
     }

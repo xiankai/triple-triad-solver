@@ -34,7 +34,15 @@ const CardsPage = ({ playersCards, opponentsCards, placedCards, populateDeck }) 
         p={1}
       >
         {
-          playersCards.map((card, i) => <DeckCard key={i} card={card} isPlayer />)
+          playersCards.map((card, i) =>
+            <Box
+              key={i}
+              col={4}
+              style={{ display: 'inline-block' }}
+            >
+              <DeckCard key={i} card={card} isPlayer />
+            </Box>
+          )
         }
       </Box>
       <Box
@@ -42,7 +50,15 @@ const CardsPage = ({ playersCards, opponentsCards, placedCards, populateDeck }) 
         p={1}
       >
         {
-          placedCards.map((placedCard, i) => <BoardCard key={i} {...placedCard} position={i} />)
+          placedCards.map((placedCard, i) =>
+            <Box
+              key={i}
+              col={4}
+              style={{ display: 'inline-block' }}
+            >
+              <BoardCard key={i} {...placedCard} position={i} />
+            </Box>
+          )
         }
       </Box>
       <Box
@@ -50,7 +66,15 @@ const CardsPage = ({ playersCards, opponentsCards, placedCards, populateDeck }) 
         p={1}
       >
         {
-          opponentsCards.map((card, i) => <DeckCard key={i} card={card} isPlayer={false} />)
+          opponentsCards.map((card, i) =>
+            <Box
+              key={i}
+              col={4}
+              style={{ display: 'inline-block' }}
+            >
+              <DeckCard card={card} isPlayer={false} />
+            </Box>
+          )
         }
       </Box>
     </Flex>
