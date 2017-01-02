@@ -1,9 +1,6 @@
 /* @flow */
 import React from 'react';
 import {
-  Block,
-  Image,
-  Link,
   PageHeader,
   SwitchTheme,
   Title,
@@ -12,24 +9,12 @@ import {
 
 const HomePage = () => (
   <View>
-    <Title message="Este.js" />
+    <Title message="Triple Triad Solver" />
     <PageHeader
-      description="Starter kit for universal full–fledged React apps. One stack
-        for browser, mobile, server."
-      heading="Este"
+      description="Barebones site. Currently only a TT simulator is available."
+      heading="Lima's project"
     />
-    {/* This is a block with margin-bottom: scale[4]. Inline styles rocks. */}
-    <Block mb={4}>
-      <Link to="https://github.com/este/este">
-        github.com/este/este
-      </Link>
-    </Block>
     <SwitchTheme />
-    <Image
-      alt="50x50 placeholder"
-      mt={2}
-      src={require('./50x50.png')}
-    />
   </View>
 );
 
