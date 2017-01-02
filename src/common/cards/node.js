@@ -132,28 +132,6 @@ const computeBoardStandardResult = (grid, placedCard, position, owner) => {
   return grid;
 };
 
-const getFinalResult = (grid, playersTurn) => {
-  const playersPlacedCards = grid.filter(({ owner }) => owner === 'player');
-
-  if (playersTurn) {
-    // opponent started first
-    if (playersPlacedCards > 4) {
-      return 'win';
-    } else if (playersPlacedCards === 4) {
-      return 'draw';
-    }
-  } else {
-    // player started first
-    if (playersPlacedCards > 5) {
-      return 'win';
-    } else if (playersPlacedCards === 5) {
-      return 'draw';
-    }
-  }
-
-  return 'loss';
-};
-
 const computeCurrentBoardScore = (grid) => {
   // naive implementation of calculating board score
   // the numerical advantage in terms of cards, instead of board positioning
@@ -236,14 +214,6 @@ const calculate = (grid, playerDeck, opponentDeck, playersTurn, depth = 1) => {
   return calculations;
 };
 
-const k = calculate(
-  (new Array(9)).fill(null),
-  (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length)),
-  (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length)),
-  true,
-  2,
-);
-
 // const k = calculate(
 //   (new Array(9)).fill(null),
 //   [0, 0, 0, 0, 0],
@@ -252,5 +222,4 @@ const k = calculate(
 //   2
 // );
 
-console.log(k);
 // console.log(k.cards[0].positions[0].cards[0].positions[1].cards[2]);

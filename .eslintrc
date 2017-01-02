@@ -33,7 +33,7 @@
     "react-native/no-unused-styles": 2,
     "react-native/split-platform-components": 2,
     "react-native/no-inline-styles": 0,
-    "react-native/no-color-literals": 2,
+    "react-native/no-color-literals": 0,
     // Rules for functional programming. We do not need Object.freeze.
     "fp/no-mutating-assign": 2,
     // TODO: Can't be enabled now, it requires a lot of refactoring.
@@ -58,5 +58,6 @@
     "no-restricted-syntax": 0,
     "no-lonely-if": 0,
     "react/prop-types": 0,
+    "no-else-return": 0,
   }
 }
