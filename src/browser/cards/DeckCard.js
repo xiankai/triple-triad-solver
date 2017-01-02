@@ -8,7 +8,7 @@ import { takeCard } from '../../common/cards/actions';
 import Card from './Card';
 
 const boxSource = {
-  beginDrag: props => {
+  beginDrag: (props) => {
     const { isPlayer, card } = props;
     return {
       isPlayer,

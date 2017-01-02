@@ -30,5 +30,5 @@ export {
   FormattedRelative,
   FormattedTime,
   Text,
-  TextInput,
+  TextInput
 };

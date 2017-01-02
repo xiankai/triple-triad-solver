@@ -119,13 +119,11 @@ const CardsPage = ({
 
 export default DragDropContext(HTML5Backend)(
   connect(
-    (state: State) => {
-      return {
-        ...state.cards.present,
-        past: state.cards.past.length,
-        future: state.cards.future.length,
-      };
-    },
+    (state: State) => ({
+      ...state.cards.present,
+      past: state.cards.past.length,
+      future: state.cards.future.length,
+    }),
     {
       populateDeck,
       resetGame,

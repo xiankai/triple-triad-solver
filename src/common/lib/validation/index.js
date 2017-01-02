@@ -4,5 +4,5 @@ import ValidationError from './ValidationError';
 
 export {
   Validation,
-  ValidationError,
+  ValidationError
 };

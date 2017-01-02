@@ -4,5 +4,5 @@ import fieldsReducer from './reducer';
 
 export {
   fields,
-  fieldsReducer,
+  fieldsReducer
 };

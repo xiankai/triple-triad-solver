@@ -4,5 +4,5 @@ import firebaseMessages from './messages';
 
 export {
   firebase,
-  firebaseMessages,
+  firebaseMessages
 };

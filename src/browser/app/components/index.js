@@ -75,7 +75,7 @@ export {
   Text,
   Textarea,
   Toolbar,
-  Tooltip,
+  Tooltip
 } from 'rebass';
 
 // Reflexbox components
@@ -84,5 +84,5 @@ export {
   Reflex,
   Flex,
   Box,
-  Grid,
+  Grid
 } from 'reflexbox';
