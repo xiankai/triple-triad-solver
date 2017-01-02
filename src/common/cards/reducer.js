@@ -10,8 +10,6 @@ const initialState = {
     card: null,
     isPlayer: null,
   }),
-  pastState: [],
-  futureState: [],
 };
 
 const takeCard = (state, action) => {
@@ -56,10 +54,10 @@ const reducer = (
     case 'PLACE_CARD': {
       const { isPlayer, card, position } = action.payload;
       // take card as well
-      const { placedCards } = takeCard(state, action);
+      const { placedCards, ...newState } = takeCard(state, action);
 
       return {
-        ...state,
+        ...newState,
         placedCards: computeBoardStandardResult(placedCards.slice(), card, position, isPlayer),
       };
     }

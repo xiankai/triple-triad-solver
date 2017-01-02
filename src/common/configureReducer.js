@@ -38,7 +38,7 @@ const configureReducer = (initialState: Object) => {
   let reducer = combineReducers({
     app,
     auth,
-    cards: undoable(cards, { filter: includeAction(['TAKE_CARD', 'PLACE_CARD']) }),
+    cards: undoable(cards, { filter: includeAction(['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK']) }),
     config,
     device,
     fields,
