@@ -8,6 +8,8 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 import { ActionCreators } from 'redux-undo';
 
+import cards from '../../common/cards/cards.json';
+
 import {
   populateDeck,
   resetGame,
@@ -25,6 +27,8 @@ import {
 } from '../app/components';
 import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
+
+const generateRandomDeck = () => (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length));
 
 const CardsPage = ({
   playersCards,
@@ -47,7 +51,7 @@ const CardsPage = ({
     />
     <Flex>
       <Grid col={4} p={2}>
-        <Button onClick={() => populateDeck(true, [0, 1, 5, 10, 15])} backgroundColor="blue">Populate Player Deck</Button>
+        <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Player Deck</Button>
       </Grid>
       <Grid col={4} p={2}>
         <Grid col={4}>
@@ -68,7 +72,7 @@ const CardsPage = ({
         </Grid>
       </Grid>
       <Grid col={4} p={2}>
-        <Button onClick={() => populateDeck(false, [80, 60, 40, 20, 10])} backgroundColor="red">Populate Opponent Deck</Button>
+        <Button onClick={() => populateDeck(false, generateRandomDeck())} backgroundColor="red">Populate Opponent Deck</Button>
       </Grid>
     </Flex>
     <Flex>
