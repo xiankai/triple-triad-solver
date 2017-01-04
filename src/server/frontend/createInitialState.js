@@ -14,6 +14,7 @@ const createInitialState = () => ({
     appVersion: config.appVersion,
     firebase: config.firebase,
     sentryUrl: config.sentryUrl,
+    peerjs: config.peerjs,
   },
   device: deviceReducer(),
   intl: {

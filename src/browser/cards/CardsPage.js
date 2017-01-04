@@ -25,6 +25,7 @@ import {
   Grid,
   Flex,
 } from '../app/components';
+import Multiplayer from './Multiplayer';
 import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
 
@@ -49,6 +50,7 @@ const CardsPage = ({
       description="Get the latest scoop on your winning odds against Rowena"
       heading="Triple Triad Solver"
     />
+    <Multiplayer />
     <Flex>
       <Grid col={4} p={2}>
         <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Player Deck</Button>
