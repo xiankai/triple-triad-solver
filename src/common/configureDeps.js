@@ -30,6 +30,7 @@ const createFirebaseDeps = (firebaseConfig) => {
 
 const configureDeps = (initialState, platformDeps) => ({
   ...platformDeps,
+  peerjs: initialState.config.peerjs,
   ...createFirebaseDeps(initialState.config.firebase),
   getUid: () => platformDeps.uuid.v4(),
   now: () => Date.now(),

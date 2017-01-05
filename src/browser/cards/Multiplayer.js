@@ -2,6 +2,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import {
+  startup,
+  connecting,
+  connected,
+  send,
+  receive,
+} from '../../common/peerjs/actions';
+
 class Multiplayer extends Component {
   constructor(props) {
     super(props);
@@ -19,13 +27,18 @@ class Multiplayer extends Component {
       return;
     }
 
-    const that = this;
-    const peer = new window.Peer({ key: that.props.peerjs });
-    peer.on('open', id => that.setState({ id }));
+    const {
+      startup,
+    } = this.props;
 
-    peer.on('connection', this.monitorConnection);
+    startup();
+    // const that = this;
+    // const peer = new window.Peer({ key: that.props.peerjs });
+    // peer.on('open', id => that.setState({ id }));
 
-    that.setState({ peer });
+    // peer.on('connection', this.monitorConnection);
+
+    // that.setState({ peer });
   }
 
   monitorConnection = (connection) => {
@@ -63,5 +76,12 @@ class Multiplayer extends Component {
 }
 
 export default connect(
-  state => ({ peerjs: state.config.peerjs })
+  state => ({ peerjs: state.config.peerjs }),
+  {
+    startup,
+    connecting,
+    connected,
+    send,
+    receive,
+  }
 )(Multiplayer);
