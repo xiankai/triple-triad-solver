@@ -29,3 +29,6 @@ export const populateDeck = (isPlayer: boolean, cards: Array): Action => ({
 export const resetGame = (): Action => ({
   type: 'RESET_GAME',
 });
+
+export const undoableActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK'];
+export const multiplayerActions = ['TAKE_CARD', 'PLACE_CARD'];

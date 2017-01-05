@@ -3,6 +3,7 @@ import type { Action, State } from './types';
 import app from './app/reducer';
 import auth from './auth/reducer';
 import cards from './cards/reducer';
+import { undoableActions } from './cards/actions';
 import config from './config/reducer';
 import device from './device/reducer';
 import intl from './intl/reducer';
@@ -38,7 +39,7 @@ const configureReducer = (initialState: Object) => {
   let reducer = combineReducers({
     app,
     auth,
-    cards: undoable(cards, { filter: includeAction(['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK']) }),
+    cards: undoable(cards, { filter: includeAction(undoableActions) }),
     config,
     device,
     fields,
