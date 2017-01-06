@@ -7,6 +7,7 @@ import { undoableActions } from './cards/actions';
 import config from './config/reducer';
 import device from './device/reducer';
 import intl from './intl/reducer';
+import peerjs from './peerjs/reducer';
 import themes from './themes/reducer';
 import todos from './todos/reducer';
 import users from './users/reducer';
@@ -44,6 +45,7 @@ const configureReducer = (initialState: Object) => {
     device,
     fields,
     intl,
+    peerjs,
     themes,
     todos,
     users,
