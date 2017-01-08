@@ -3,6 +3,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
+  Spinner,
+} from '../app/components';
+
+import {
   startup,
   connecting,
   setError,
@@ -28,7 +32,7 @@ class Multiplayer extends Component {
   };
 
   render() {
-    const { peer, connection, error } = this.props;
+    const { peer, connection, loading, error } = this.props;
 
     return (
       <div>
@@ -37,6 +41,7 @@ class Multiplayer extends Component {
           Enter your opponent's id here:
           <input type="text" ref={input => { this.input = input; }} />
           <button onClick={this.findOpponent} >Enter</button>
+          { loading && <Spinner /> }
           { error }
         </div>
       </div>

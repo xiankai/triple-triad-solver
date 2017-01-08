@@ -5,6 +5,7 @@ const initialState = {
   peer: null,
   connection: null,
   error: null,
+  loading: false,
 };
 
 const reducer = (
@@ -22,10 +23,19 @@ const reducer = (
       };
     }
 
+    case 'CONNECTING': {
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    }
+
     case 'CONNECTED': {
       return {
         ...state,
         error: null,
+        loading: false,
         connection: action.payload.connection,
       };
     }
@@ -35,6 +45,7 @@ const reducer = (
     case 'ERROR': {
       return {
         ...state,
+        loading: false,
         error: action.payload.error,
       };
     }

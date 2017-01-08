@@ -60,11 +60,13 @@ const startupEpic = (
 
   const peer = new window.Peer({ key: peerjs });
   const peerConnection = Observable.fromPromise(
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       try {
-        peer.on('open', () => resolve(peer));
+        peer
+          .on('open', () => resolve(peer))
+          .on('error', err => resolve(setError(err.message)));
       } catch (err) {
-        reject(err);
+        resolve(setError(err.message));
       }
     })
   );
@@ -81,72 +83,61 @@ const startupEpic = (
 const listeningEpic = (
   action$: any,
   { getState },
-): Action => {
-  return action$
-    .ofType('STARTED')
-    .mergeMap(() => {
-      const { peerjs: { peer } } = getState();
+): Action => action$
+  .ofType('STARTED')
+  .mergeMap(() => {
+    const { peerjs: { peer } } = getState();
 
-      if (!peer) {
-        return Observable.of();
-      }
+    if (!peer) {
+      return Observable.of();
+    }
 
-      const peerConnection = Observable.fromPromise(
-        new Promise((resolve, reject) => {
-          try {
-            console.log(`listening on ${peer.id}`);
-            peer.on('connection', (connection: DataConnection) => {
-              console.log(`connected to ${connection.peer}`);
-              resolve(connection);
-            });
-          } catch (err) {
-            reject(err);
-          }
-        })
-      );
-
-      return peerConnection.map(connected);
-    })
-    // .takeUntil(action$.filter((action: Action) => action.type === 'CONNECTED'));
-};
+    return Observable.fromPromise(
+      new Promise((resolve) => {
+        try {
+          peer
+            .on('connection', conn => resolve(connected(conn)))
+            .on('error', err => resolve(setError(err.message)));
+        } catch (err) {
+          resolve(setError(err.message));
+        }
+      })
+    );
+  })
+  // .takeUntil(action$.filter((action: Action) => action.type === 'CONNECTED'));
 
 const connectingEpic = (
   action$: any,
   { getState },
-): Action => {
-  return action$
-    .ofType('CONNECTING')
-    .mergeMap((action: Action) => {
-      const { peerjs: { peer } } = getState();
-      console.log(peer);
+): Action => action$
+  .ofType('CONNECTING')
+  .mergeMap((action: Action) => {
+    const { peerjs: { peer } } = getState();
+    console.log(peer);
 
-      if (!peer) {
-        return Observable.of();
-      }
+    if (!peer) {
+      return Observable.of();
+    }
 
-      const peerConnection = Observable.fromPromise(
-        new Promise((resolve, reject) => {
-          try {
-            console.log(`connecting from ${peer.id}`);
-            console.log(`connecting to ${action.payload.id}`);
+    return Observable.fromPromise(
+      new Promise((resolve) => {
+        try {
+          console.log(`connecting from ${peer.id}`);
+          console.log(`connecting to ${action.payload.id}`);
 
-            const conn = peer.connect(
-              action.payload.id
-            );
-            console.log(conn);
-            conn.on('open', () => {
-              console.log('connected to ' + conn.peer);
-              resolve(conn);
-            });
-          } catch (err) {
-            reject(err);
-          }
-        })
-      );
+          const conn = peer.connect(
+            action.payload.id
+          );
 
-      return peerConnection.map(connected);
-    });
-};
+          conn
+            .on('open', () => resolve(connected(conn)))
+            .on('error', err => resolve(setError(err.message)));
+        } catch (err) {
+          resolve(setError(err.message));
+        }
+      })
+    );
+  });
 
 export const epics = [
   startupEpic,
