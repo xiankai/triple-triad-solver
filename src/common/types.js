@@ -80,6 +80,16 @@ export type UsersState = {
   viewer: ?User,
 };
 
+// PeerJS
+
+export type Peer = {
+
+};
+
+export type DataConnection = {
+
+};
+
 // State
 
 export type State = {

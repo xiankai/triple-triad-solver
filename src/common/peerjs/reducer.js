@@ -16,14 +16,20 @@ const reducer = (
   if (!action) return state;
 
   switch (action.type) {
-    case 'CONNECTING': {
+    case 'STARTED': {
       return {
         ...state,
-        id: action.payload.id,
+        peer: action.payload.peer,
       };
     }
 
-    case 'CONNECTED':
+    case 'CONNECTED': {
+      return {
+        ...state,
+        connection: action.payload.connection,
+      };
+    }
+
     case 'SEND':
     case 'RECEIVE':
     case 'ERROR':

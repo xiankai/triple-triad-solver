@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import {
   startup,
   connecting,
-  connected,
+  connectFail,
   send,
   receive,
 } from '../../common/peerjs/actions';
@@ -27,18 +27,7 @@ class Multiplayer extends Component {
       return;
     }
 
-    const {
-      startup,
-    } = this.props;
-
-    startup();
-    // const that = this;
-    // const peer = new window.Peer({ key: that.props.peerjs });
-    // peer.on('open', id => that.setState({ id }));
-
-    // peer.on('connection', this.monitorConnection);
-
-    // that.setState({ peer });
+    this.props.startup();
   }
 
   monitorConnection = (connection) => {
@@ -54,16 +43,16 @@ class Multiplayer extends Component {
 
   findOpponent = () => {
     if (this.input.value) {
-      this.monitorConnection(this.state.peer.connect(this.input.value));
+      this.props.connecting(this.input.value);
     } else {
-      this.setState({ error: 'No opponent ID specified.' });
+      this.props.connectFail('No opponent ID specified.');
     }
   };
 
   render() {
     return (
       <div>
-        <div>Your TT ID for this session is: { this.state.id } </div>
+        <div>Your TT ID for this session is: { this.props.id } </div>
         <div>
           Enter your opponent's id here:
           <input type="text" ref={input => { this.input = input; }} />
@@ -76,11 +65,11 @@ class Multiplayer extends Component {
 }
 
 export default connect(
-  state => ({ peerjs: state.config.peerjs }),
+  state => ({ id: state.peerjs.id }),
   {
     startup,
     connecting,
-    connected,
+    connectFail,
     send,
     receive,
   }
