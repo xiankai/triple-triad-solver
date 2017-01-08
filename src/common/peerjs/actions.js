@@ -41,7 +41,7 @@ export const receive = (data: object): Action => ({
   },
 });
 
-export const error = (error: string): Action => ({
+export const setError = (error: string): Action => ({
   type: 'ERROR',
   payload: {
     error,
@@ -70,7 +70,7 @@ const startupEpic = (
   );
 
   return action$
-    .filter((action: Action) => action.type === 'STARTUP')
+    .ofType('STARTUP')
     .mergeMap(() => peerConnection.map(started));
 
   // create observable that takes id and returns connetion
@@ -82,14 +82,8 @@ const listeningEpic = (
   action$: any,
   { getState },
 ): Action => {
-  if (typeof window === 'undefined') {
-    return action$.mapTo({
-      type: 'NOT_READY',
-    });
-  }
-
   return action$
-    .filter((action: Action) => action.type === 'STARTED')
+    .ofType('STARTED')
     .mergeMap(() => {
       const { peerjs: { peer } } = getState();
 
@@ -100,7 +94,6 @@ const listeningEpic = (
       const peerConnection = Observable.fromPromise(
         new Promise((resolve, reject) => {
           try {
-            console.log(peer.id);
             console.log(`listening on ${peer.id}`);
             peer.on('connection', (connection: DataConnection) => {
               console.log(`connected to ${connection.peer}`);
@@ -121,14 +114,8 @@ const connectingEpic = (
   action$: any,
   { getState },
 ): Action => {
-  if (typeof window === 'undefined') {
-    return action$.mapTo({
-      type: 'NOT_READY',
-    });
-  }
-
   return action$
-    .filter((action: Action) => action.type === 'CONNECTING')
+    .ofType('CONNECTING')
     .mergeMap((action: Action) => {
       const { peerjs: { peer } } = getState();
       console.log(peer);

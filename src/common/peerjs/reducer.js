@@ -3,7 +3,6 @@ import type { Action, PeerjsState } from '../types';
 
 const initialState = {
   peer: null,
-  id: null,
   connection: null,
   error: null,
 };
@@ -26,13 +25,19 @@ const reducer = (
     case 'CONNECTED': {
       return {
         ...state,
+        error: null,
         connection: action.payload.connection,
       };
     }
 
     case 'SEND':
     case 'RECEIVE':
-    case 'ERROR':
+    case 'ERROR': {
+      return {
+        ...state,
+        error: action.payload.error,
+      };
+    }
 
     default:
       return state;
