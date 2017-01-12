@@ -132,8 +132,7 @@ const connectingEpic = (
 
           conn
             .on('open', () => resolve(connected(conn)))
-            .on('error', err => resolve(setError(err.message)))
-            .on('close', () => resolve(close()));
+            .on('error', err => resolve(setError(err.message)));
         } catch (err) {
           resolve(setError(err.message));
         }
@@ -154,7 +153,6 @@ const sendActionEpic = (
     }
 
     try {
-      console.log('sending data', action);
       if (action.payload.isPlayer) {
         // you are sending your actions,
         // which show as the opponent for the opponent!
@@ -182,13 +180,6 @@ const receiveActionEpic = (
     }
 
     return Observable.fromEvent(connection, 'data');
-    // const getEventHandlerAsObservable = Observable.fromEventPattern(
-    //   handler => connection.on('data', handler),
-    //   handler => console.log('attempting to close', handler),
-    //   action => { console.log(action); return action; }
-    // );
-
-    // return getEventHandlerAsObservable;
   });
 
 export const epics = [
