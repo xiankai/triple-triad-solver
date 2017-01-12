@@ -155,10 +155,10 @@ const sendActionEpic = (
 
     try {
       console.log('sending data', action);
-      // you are sending your actions,
-      // which show as the opponent for the opponent!
-      action.payload.isPlayer = false;
-      connection.send(action);
+        // you are sending your actions,
+        // which show as the opponent for the opponent!
+        action.payload.isPlayer = false;
+        connection.send(action);
 
       return Observable.of();
     } catch (err) {
@@ -178,15 +178,14 @@ const receiveActionEpic = (
       return Observable.of();
     }
 
-    return Observable.fromPromise(
-      new Promise((resolve) => {
-        console.log('listening');
-        connection.on('data', (action) => {
-          console.log('received data', action);
-          resolve(action);
-        });
-      })
-    );
+    return Observable.fromEvent(connection, 'data');
+    // const getEventHandlerAsObservable = Observable.fromEventPattern(
+    //   handler => connection.on('data', handler),
+    //   handler => console.log('attempting to close', handler),
+    //   action => { console.log(action); return action; }
+    // );
+
+    // return getEventHandlerAsObservable;
   });
 
 export const epics = [
