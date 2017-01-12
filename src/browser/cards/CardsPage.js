@@ -4,6 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { DragDropContext } from 'react-dnd';
+import TouchBackend from 'react-dnd-touch-backend';
 import HTML5Backend from 'react-dnd-html5-backend';
 
 import { ActionCreators } from 'redux-undo';
@@ -161,7 +162,7 @@ const CardsPage = ({
 );
 
 
-export default DragDropContext(HTML5Backend)(
+export default DragDropContext(TouchBackend)(
   connect(
     (state: State) => ({
       ...state.cards.present,
