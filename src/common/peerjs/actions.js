@@ -27,6 +27,10 @@ export const connected = (connection: DataConnection): Action => ({
   },
 });
 
+export const close = (): Action => ({
+  type: 'CLOSE',
+});
+
 export const send = (data: object): Action => ({
   type: 'SEND',
   payload: {
@@ -113,7 +117,6 @@ const connectingEpic = (
   .ofType('CONNECTING')
   .mergeMap((action: Action) => {
     const { peerjs: { peer } } = getState();
-    console.log(peer);
 
     if (!peer) {
       return Observable.of();
@@ -122,16 +125,14 @@ const connectingEpic = (
     return Observable.fromPromise(
       new Promise((resolve) => {
         try {
-          console.log(`connecting from ${peer.id}`);
-          console.log(`connecting to ${action.payload.id}`);
-
           const conn = peer.connect(
             action.payload.id
           );
 
           conn
             .on('open', () => resolve(connected(conn)))
-            .on('error', err => resolve(setError(err.message)));
+            .on('error', err => resolve(setError(err.message)))
+            .on('close', () => resolve(close()));
         } catch (err) {
           resolve(setError(err.message));
         }

@@ -43,6 +43,16 @@ const reducer = (
       };
     }
 
+    case 'CLOSE': {
+      return {
+        ...state,
+        error: `Connection with ${state.connectee} closed.`,
+        loading: false,
+        connection: null,
+        connectee: null,
+      };
+    }
+
     case 'SEND':
     case 'RECEIVE':
     case 'ERROR': {
