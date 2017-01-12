@@ -74,7 +74,7 @@ const renderScripts = (state, appJsFilename) =>
   // github.com/yahoo/serialize-javascript#user-content-automatic-escaping-of-html-characters
   // TODO: Switch to CSP, https://github.com/este/este/pull/731
   `
-    <script src="http://cdn.peerjs.com/0.3/peer.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/peerjs/0.3.14/peer.min.js"></script>
     <script>
       window.__INITIAL_STATE__ = ${serialize(state)};
     </script>
