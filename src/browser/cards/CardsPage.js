@@ -20,6 +20,7 @@ import {
   Title,
   View,
 
+  Text,
   Button,
 
   Grid,
@@ -30,6 +31,26 @@ import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
 
 const generateRandomDeck = () => (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length));
+  
+const determineWinner = (placedCards) => {
+  if (placedCards.filter(placedCard => placedCard.card === null).length > 0) {
+    return 'not yet';
+  }
+
+  const score = placedCards.reduce((score, placedCard) => score + (placedCard.isPlayer ? 1 : -1), 0);
+
+  if (score > 0) {
+    return 'player';
+  }
+
+  if (score < 0) {
+    return 'opponent';
+  }
+
+  if (score === 0) {
+    return 'draw';
+  }
+};
 
 const CardsPage = ({
   playersCards,
@@ -37,6 +58,7 @@ const CardsPage = ({
   placedCards,
   past,
   future,
+  winner,
 
   populateDeck,
   resetGame,
@@ -51,6 +73,26 @@ const CardsPage = ({
       heading="Triple Triad Solver"
     />
     <Multiplayer />
+    <Flex justify="center">
+      <Text
+        bold
+        style={{
+          color: winner === 'player' ? '#4AC8E6' : '#E27062',
+          transform: 'scale(2,1)',
+        }}
+      >
+        {
+          (() => {
+            switch (winner) {
+              case 'player': return 'YOU WIN';
+              case 'opponent': return 'YOU LOSE';
+              case 'draw': return 'DRAW';
+              default: return '';
+            }
+          })()
+        }
+      </Text>
+    </Flex>
     <Flex>
       <Grid col={4} p={2}>
         <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Player Deck</Button>
@@ -125,6 +167,7 @@ export default DragDropContext(HTML5Backend)(
       ...state.cards.present,
       past: state.cards.past.length,
       future: state.cards.future.length,
+      winner: determineWinner(state.cards.present.placedCards),
     }),
     {
       populateDeck,

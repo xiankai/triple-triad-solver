@@ -4,16 +4,17 @@ import React from 'react';
 import cards from '../../common/cards/cards.json';
 
 const Card = ({ card, isPlayer }) => {
-  const { topValue, leftValue, bottomValue, rightValue } = cards[card] || {};
+  const { topValue, leftValue, bottomValue, rightValue, number } = cards[card] || {};
 
   return (
     <div
       style={{
         position: 'relative',
         height: 120,
-        border: '1px dotted red',
+        border: '1px dotted #D8C28B',
         width: '100%',
-        background: card !== null ? (isPlayer ? 'blue' : 'red') : 'transparent',
+        background: card !== null ? (isPlayer ? '#4A61A8' : '#AA2A28') : 'transparent',
+        // backgroundImage: `url("/assets/cards/${('00' + number).slice(-3)}.png")`,
         color: 'white',
         // flex: 1,
       }}

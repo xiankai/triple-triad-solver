@@ -149,6 +149,10 @@ const makeConfig = (options) => {
           }], {
             ignore: ['original/**'],
           }),
+          // new CopyWebpackPlugin([{
+          //   from: './src/common/cards/img/',
+          //   to: 'cards',
+          // }]),
         );
       }
       return plugins;
