@@ -102,9 +102,9 @@ const listeningEpic = (
           resolve(setError(err.message));
         }
       })
-    );
-  })
-  // .takeUntil(action$.filter((action: Action) => action.type === 'CONNECTED'));
+    )
+    .takeUntil(action$.filter((action: Action) => action.type === 'CONNECTED'));
+  });
 
 const connectingEpic = (
   action$: any,
@@ -137,7 +137,8 @@ const connectingEpic = (
         }
       })
     );
-  });
+  })
+  .takeUntil(action$.ofType('ERROR'));
 
 export const epics = [
   startupEpic,

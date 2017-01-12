@@ -4,6 +4,7 @@ import type { Action, PeerjsState } from '../types';
 const initialState = {
   peer: null,
   connection: null,
+  connectee: null,
   error: null,
   loading: false,
 };
@@ -27,6 +28,7 @@ const reducer = (
       return {
         ...state,
         connection: null,
+        connectee: action.payload.id,
         loading: true,
         error: null,
       };

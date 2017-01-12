@@ -32,18 +32,36 @@ class Multiplayer extends Component {
   };
 
   render() {
-    const { peer, connection, loading, error } = this.props;
+    const {
+      peer,
+      connection,
+      connectee,
+      loading,
+      error,
+    } = this.props;
 
     return (
       <div>
         { peer && <div>Your TT ID for this session is: { peer.id } </div> }
         <div>
           Enter your opponent's id here:
-          <input type="text" ref={input => { this.input = input; }} />
+          <input type="text" ref={(input) => { this.input = input; }} />
           <button onClick={this.findOpponent} >Enter</button>
           { loading && <Spinner /> }
-          { error }
         </div>
+        Status: {(() => {
+          if (error) {
+            return error;
+          }
+
+          if (connection && connection.open) {
+            return `Connected to ${connection.peer}`;
+          }
+
+          if (loading) {
+            return `Connecting to ${connectee}`;
+          }
+        })()}
       </div>
     );
   }
