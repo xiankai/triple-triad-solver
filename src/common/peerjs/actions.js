@@ -155,15 +155,18 @@ const sendActionEpic = (
 
     try {
       console.log('sending data', action);
+      if (action.payload.isPlayer) {
         // you are sending your actions,
         // which show as the opponent for the opponent!
         action.payload.isPlayer = false;
         connection.send(action);
-
-      return Observable.of();
+      }
+      // otherwise, no need to send to the opponent their moves
     } catch (err) {
       return Observable.of(setError(err.message));
     }
+
+    return Observable.of();
   });
 
 const receiveActionEpic = (
