@@ -26,6 +26,7 @@ const reducer = (
     case 'CONNECTING': {
       return {
         ...state,
+        connection: null,
         loading: true,
         error: null,
       };
