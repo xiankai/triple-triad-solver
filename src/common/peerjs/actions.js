@@ -1,6 +1,7 @@
 /* @flow */
 import type { Action, Deps, Peer, DataConnection } from '../types';
 import { Observable } from 'rxjs/Observable';
+import { multiplayerActions } from '../cards/actions';
 
 export const startup = (): Action => ({
   type: 'STARTUP',
@@ -138,11 +139,60 @@ const connectingEpic = (
         }
       })
     );
-  })
-  .takeUntil(action$.ofType('ERROR'));
+  });
+
+const sendActionEpic = (
+  action$: any,
+  { getState },
+): Action => action$
+  .ofType(...multiplayerActions)
+  .mergeMap((action: Action) => {
+    const { peerjs: { connection } } = getState();
+
+    if (!connection) {
+      return Observable.of();
+    }
+
+    try {
+      console.log('sending data', action);
+      // you are sending your actions,
+      // which show as the opponent for the opponent!
+      action.payload.isPlayer = false;
+      connection.send(action);
+
+      return Observable.of();
+    } catch (err) {
+      return Observable.of(setError(err.message));
+    }
+  });
+
+const receiveActionEpic = (
+  action$: any,
+  { getState },
+): Action => action$
+  .ofType('CONNECTED')
+  .mergeMap(() => {
+    const { peerjs: { connection } } = getState();
+
+    if (!connection) {
+      return Observable.of();
+    }
+
+    return Observable.fromPromise(
+      new Promise((resolve) => {
+        console.log('listening');
+        connection.on('data', (action) => {
+          console.log('received data', action);
+          resolve(action);
+        });
+      })
+    );
+  });
 
 export const epics = [
   startupEpic,
   listeningEpic,
   connectingEpic,
+  sendActionEpic,
+  receiveActionEpic,
 ];

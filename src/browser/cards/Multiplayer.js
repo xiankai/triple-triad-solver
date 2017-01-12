@@ -61,6 +61,8 @@ class Multiplayer extends Component {
           if (loading) {
             return `Connecting to ${connectee}`;
           }
+
+          return 'Not connected yet.';
         })()}
       </div>
     );

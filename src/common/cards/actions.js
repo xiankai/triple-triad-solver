@@ -31,4 +31,4 @@ export const resetGame = (): Action => ({
 });
 
 export const undoableActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK'];
-export const multiplayerActions = ['TAKE_CARD', 'PLACE_CARD'];
+export const multiplayerActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK'];
