@@ -3,6 +3,6 @@ import gulp from 'gulp';
 
 gulp.task('deploy-heroku-git', (done) => {
   childProcess
-    .spawn('git', ['push', 'heroku', 'master'], { stdio: 'inherit' })
+    .spawn('git', ['push', 'origin', 'master'], { stdio: 'inherit' })
     .on('close', done);
 });
