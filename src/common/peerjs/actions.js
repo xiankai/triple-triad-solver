@@ -55,7 +55,7 @@ export const setError = (error: string): Action => ({
 
 const startupEpic = (
   action$: any,
-  { peerjs }: Deps,
+  { peerjs, peerjsServer }: Deps,
 ): Action => {
   if (typeof window === 'undefined') {
     return action$.mapTo({
@@ -63,7 +63,13 @@ const startupEpic = (
     });
   }
 
-  const peer = new window.Peer({ key: peerjs });
+  const peer = new window.Peer({
+    key: peerjs,
+    host: peerjsServer,
+    port: 443,
+    secure: true,
+    debug: 3,
+  });
   const peerConnection = Observable.fromPromise(
     new Promise((resolve) => {
       try {
