@@ -32,7 +32,7 @@ import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
 
 const generateRandomDeck = () => (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length));
-  
+
 const determineWinner = (placedCards) => {
   if (placedCards.filter(placedCard => placedCard.card === null).length > 0) {
     return 'not yet';
@@ -161,8 +161,18 @@ const CardsPage = ({
   </View>
 );
 
+const userAgent = () => {
+  let backend = HTML5Backend;
+  if (typeof window !== 'undefined' &&
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)
+  ) {
+    backend = TouchBackend;
+  }
 
-export default DragDropContext(TouchBackend)(
+  return backend;
+};
+
+export default DragDropContext(userAgent())(
   connect(
     (state: State) => ({
       ...state.cards.present,
