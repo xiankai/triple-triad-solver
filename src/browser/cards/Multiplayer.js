@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import {
   Spinner,
+  Image,
+  Input,
 } from '../app/components';
 
 import {
@@ -13,7 +15,7 @@ import {
   send,
   receive,
 } from '../../common/peerjs/actions';
-import { isBrowser } from '../../common/utils';
+import { isBrowser, isMobile } from '../../common/utils';
 
 class Multiplayer extends Component {
   componentDidMount() {
@@ -41,18 +43,38 @@ class Multiplayer extends Component {
       error,
     } = this.props;
 
+    const link = `${isBrowser() ? window.location.origin : ''}/cards?p=${peer && peer.id}`;
+
     return (
       <div>
         {
           peer &&
           <div>
-            <div>Your TT ID for this session is: { peer.id } </div>
+            Your ID for this multiplayer session is: { peer.id }
             <div>
               Share this link to challenge your friends!
-              <input type="text" value={`${isBrowser() ? window.location.origin : ''}/cards?p=${peer.id}`} />
-              <a href={`whatsapp://send?text=${isBrowser() ? window.location.origin : ''}/cards?p=${peer.id}`} data-action="share/whatsapp/share">
-                Share via Whatsapp
-              </a>
+              <Input
+                value={link}
+                readOnly
+                hideLabel
+                autoOff
+              />
+              {
+                isMobile &&
+                <div>
+                  <a href={`fb-messenger://share?link=${link}`}>
+                   <Image src={require('./messenger.png')} height="16px" /> Share link via Facebook Messenger
+                  </a>
+                </div>
+              }
+              {
+                isMobile &&
+                <div>
+                  <a href={`whatsapp://send?text=${isBrowser() ? window.location.origin : ''}/cards?p=${peer.id}`} data-action="share/whatsapp/share">
+                   <Image src={require('./whatsapp-icon.png')} height="16px" /> Share link via Whatsapp
+                  </a>
+                </div>
+              }
             </div>
           </div>
         }

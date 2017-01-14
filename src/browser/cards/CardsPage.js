@@ -10,7 +10,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { ActionCreators } from 'redux-undo';
 
 import cards from '../../common/cards/cards.json';
-
+import { isMobile } from '../../common/utils';
 import {
   populateDeck,
   resetGame,
@@ -161,18 +161,7 @@ const CardsPage = ({
   </View>
 );
 
-const userAgent = () => {
-  let backend = HTML5Backend;
-  if (typeof window !== 'undefined' &&
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(window.navigator.userAgent)
-  ) {
-    backend = TouchBackend;
-  }
-
-  return backend;
-};
-
-export default DragDropContext(userAgent())(
+export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
   connect(
     (state: State) => ({
       ...state.cards.present,
