@@ -53,6 +53,8 @@ const determineWinner = (placedCards) => {
   }
 };
 
+const singlePlayer = false;
+
 const CardsPage = ({
   playersCards,
   opponentsCards,
@@ -60,6 +62,7 @@ const CardsPage = ({
   past,
   future,
   winner,
+  connected,
 
   populateDeck,
   resetGame,
@@ -95,30 +98,39 @@ const CardsPage = ({
       </Text>
     </Flex>
     <Flex>
-      <Grid col={4} p={2}>
-        <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Player Deck</Button>
-      </Grid>
-      <Grid col={4} p={2}>
-        <Grid col={4}>
-          {
-            (past + future) > 0 &&
-            <Button onClick={() => resetGame() && clearHistory()} backgroundColor="info">Reset</Button>
-          }
+      {
+        (singlePlayer || connected) &&
+        <Grid col={4} p={2}>
+          <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Player Deck</Button>
         </Grid>
-        <Grid col={4}>
-          {
-            past > 0 && <Button onClick={undo} backgroundColor="error">Undo</Button>
-          }
+      }
+      {
+        singlePlayer &&
+        <Grid col={4} p={2}>
+          <Grid col={4}>
+            {
+              (past + future) > 0 &&
+              <Button onClick={() => resetGame() && clearHistory()} backgroundColor="info">Reset</Button>
+            }
+          </Grid>
+          <Grid col={4}>
+            {
+              past > 0 && <Button onClick={undo} backgroundColor="error">Undo</Button>
+            }
+          </Grid>
+          <Grid col={4}>
+            {
+              future > 0 && <Button onClick={redo} backgroundColor="success">Redo</Button>
+            }
+          </Grid>
         </Grid>
-        <Grid col={4}>
-          {
-            future > 0 && <Button onClick={redo} backgroundColor="success">Redo</Button>
-          }
+      }
+      {
+        singlePlayer &&
+        <Grid col={4} p={2}>
+          <Button onClick={() => populateDeck(false, generateRandomDeck())} backgroundColor="red">Populate Opponent Deck</Button>
         </Grid>
-      </Grid>
-      <Grid col={4} p={2}>
-        <Button onClick={() => populateDeck(false, generateRandomDeck())} backgroundColor="red">Populate Opponent Deck</Button>
-      </Grid>
+      }
     </Flex>
     <Flex>
       <Grid col={4} p={2}>
@@ -168,6 +180,7 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
       past: state.cards.past.length,
       future: state.cards.future.length,
       winner: determineWinner(state.cards.present.placedCards),
+      connected: state.peerjs.connection && state.peerjs.connection.open && state.peerjs.connection.peer,
     }),
     {
       populateDeck,
