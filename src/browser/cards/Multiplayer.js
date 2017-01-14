@@ -55,6 +55,8 @@ class Multiplayer extends Component {
               Share this link to challenge your friends!
               <Input
                 value={link}
+                name="link"
+                label="Share Link"
                 readOnly
                 hideLabel
                 autoOff

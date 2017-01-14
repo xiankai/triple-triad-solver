@@ -62,40 +62,36 @@ export const ping = (i: number): Action => ({
 const startupEpic = (
   action$: any,
   { peerjs, peerjsServer }: Deps,
-): Action => {
-  if (!isBrowser()) {
-    return action$.mapTo({
-      type: 'NOT_READY',
-    });
-  }
+): Action => action$
+  .ofType('STARTUP')
+  .first()
+  .mergeMap(() => {
+    if (!isBrowser()) {
+      return action$.mapTo({
+        type: 'NOT_READY',
+      });
+    }
 
-  const peer = new window.Peer({
-    key: peerjs,
-    host: peerjsServer,
-    port: 443,
-    secure: true,
-    debug: 3,
+    return Observable.fromPromise(
+      new Promise((resolve) => {
+        try {
+          const peer = new window.Peer({
+            key: peerjs,
+            host: peerjsServer,
+            port: 443,
+            secure: true,
+            debug: 3,
+          });
+
+          peer
+            .on('open', () => resolve(started(peer)))
+            .on('error', err => resolve(setError(err.message)));
+        } catch (err) {
+          resolve(setError(err.message));
+        }
+      })
+    );
   });
-  const peerConnection = Observable.fromPromise(
-    new Promise((resolve) => {
-      try {
-        peer
-          .on('open', () => resolve(peer))
-          .on('error', err => resolve(setError(err.message)));
-      } catch (err) {
-        resolve(setError(err.message));
-      }
-    })
-  );
-
-  return action$
-    .ofType('STARTUP')
-    .mergeMap(() => peerConnection.map(started));
-
-  // create observable that takes id and returns connetion
-  // from connection, listen to connect or connected actions
-  // both should return a completed connection, which starts listening for data
-};
 
 const autoconnectEpic = (
   action$: any,
@@ -148,8 +144,7 @@ const listeningEpic = (
           resolve(setError(err.message));
         }
       })
-    )
-    .takeUntil(action$.ofType('CONNECTED'));
+    );
   });
 
 const connectingEpic = (
@@ -227,11 +222,11 @@ const pingingEpic = (
   action$: any,
   { getState },
 ): Action => action$
-  .ofType('CONNECTED')
+  .ofType('STARTED')
   .mergeMap(() => {
-    const { peerjs: { connection } } = getState();
+    const { peerjs: { peer } } = getState();
 
-    if (!connection) {
+    if (!peer) {
       return Observable.of();
     }
 
@@ -239,8 +234,8 @@ const pingingEpic = (
     const interval = 30000;
     return Observable.interval(interval)
       .map((i) => {
-        // debugger;
-        connection.provider.socket.send({ type: 'ping' });
+        peer.socket.send({ type: 'ping' });
+        // connection.provider.socket.send({ type: 'ping' });
         return ping(i);
       })
       .takeUntil(action$.ofType('ERROR', 'CLOSE'));

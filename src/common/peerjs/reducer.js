@@ -21,6 +21,8 @@ const reducer = (
       return {
         ...state,
         peer: action.payload.peer,
+        loading: false,
+        error: null,
       };
     }
 
@@ -37,19 +39,20 @@ const reducer = (
     case 'CONNECTED': {
       return {
         ...state,
-        error: null,
-        loading: false,
         connection: action.payload.connection,
+        loading: false,
+        error: null,
       };
     }
 
     case 'CLOSE': {
       return {
         ...state,
-        error: `Connection with ${state.connectee} closed.`,
-        loading: false,
+        peer: null,
         connection: null,
         connectee: null,
+        loading: false,
+        error: `Connection with ${state.connectee} closed.`,
       };
     }
 
