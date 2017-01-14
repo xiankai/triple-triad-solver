@@ -13,6 +13,7 @@ import {
   send,
   receive,
 } from '../../common/peerjs/actions';
+import { isBrowser } from '../../common/utils';
 
 class Multiplayer extends Component {
   componentDidMount() {
@@ -42,7 +43,19 @@ class Multiplayer extends Component {
 
     return (
       <div>
-        { peer && <div>Your TT ID for this session is: { peer.id } </div> }
+        {
+          peer &&
+          <div>
+            <div>Your TT ID for this session is: { peer.id } </div>
+            <div>
+              Share this link to challenge your friends!
+              <input type="text" value={`${isBrowser() ? window.location.origin : ''}/cards?p=${peer.id}`} />
+              <a href={`whatsapp://send?text=${isBrowser() ? window.location.origin : ''}/cards?p=${peer.id}`} data-action="share/whatsapp/share">
+                Share via Whatsapp
+              </a>
+            </div>
+          </div>
+        }
         <div>
           Enter your opponent's id here:
           <input type="text" ref={(input) => { this.input = input; }} />
