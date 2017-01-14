@@ -53,8 +53,7 @@ const App = ({ currentLocale, currentTheme }) => (
           ...bootstrap4Metas,
           {
             name: 'description',
-            content: `Starter kit for universal full–fledged React apps. One stack
-              for browser, mobile, server.`,
+            content: `Originally a solver for triple triad, now a quick and dirty multiplayer experience.`,
           },
           ...favicon.meta,
         ]}

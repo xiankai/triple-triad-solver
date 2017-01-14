@@ -32,31 +32,10 @@ export default {
       "href": "/assets/favicons/apple-touch-icon-120x120.png"
     },
     {
-      "rel": "apple-touch-icon",
-      "sizes": "144x144",
-      "href": "/assets/favicons/apple-touch-icon-144x144.png"
-    },
-    {
-      "rel": "apple-touch-icon",
-      "sizes": "152x152",
-      "href": "/assets/favicons/apple-touch-icon-152x152.png"
-    },
-    {
-      "rel": "apple-touch-icon",
-      "sizes": "180x180",
-      "href": "/assets/favicons/apple-touch-icon-180x180.png"
-    },
-    {
       "rel": "icon",
       "type": "image/png",
       "href": "/assets/favicons/favicon-32x32.png",
       "sizes": "32x32"
-    },
-    {
-      "rel": "icon",
-      "type": "image/png",
-      "href": "/assets/favicons/android-chrome-192x192.png",
-      "sizes": "192x192"
     },
     {
       "rel": "icon",
@@ -82,10 +61,6 @@ export default {
     {
       "name": "msapplication-TileColor",
       "content": "#2d89ef"
-    },
-    {
-      "name": "msapplication-TileImage",
-      "content": "/assets/favicons/mstile-144x144.png"
     },
     {
       "name": "msapplication-config",
