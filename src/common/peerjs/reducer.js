@@ -53,14 +53,18 @@ const reducer = (
       };
     }
 
-    case 'SEND':
-    case 'RECEIVE':
     case 'ERROR': {
       return {
         ...state,
         loading: false,
         error: action.payload.error,
       };
+    }
+
+    case 'PING': {
+      // eslint-disable-next-line no-console
+      console.log(`Pinging for the ${action.payload} time`);
+      return state;
     }
 
     default:

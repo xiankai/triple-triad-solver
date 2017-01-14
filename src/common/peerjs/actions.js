@@ -54,6 +54,11 @@ export const setError = (error: string): Action => ({
   },
 });
 
+export const ping = (i: number): Action => ({
+  type: 'PING',
+  payload: i,
+});
+
 const startupEpic = (
   action$: any,
   { peerjs, peerjsServer }: Deps,
@@ -144,7 +149,7 @@ const listeningEpic = (
         }
       })
     )
-    .takeUntil(action$.filter((action: Action) => action.type === 'CONNECTED'));
+    .takeUntil(action$.ofType('CONNECTED'));
   });
 
 const connectingEpic = (
@@ -218,6 +223,29 @@ const receiveActionEpic = (
     return Observable.fromEvent(connection, 'data');
   });
 
+const pingingEpic = (
+  action$: any,
+  { getState },
+): Action => action$
+  .ofType('CONNECTED')
+  .mergeMap(() => {
+    const { peerjs: { connection } } = getState();
+
+    if (!connection) {
+      return Observable.of();
+    }
+
+    // const interval = 1000;
+    const interval = 30000;
+    return Observable.interval(interval)
+      .map((i) => {
+        // debugger;
+        connection.provider.socket.send({ type: 'ping' });
+        return ping(i);
+      })
+      .takeUntil(action$.ofType('ERROR', 'CLOSE'));
+  });
+
 export const epics = [
   startupEpic,
   autoconnectEpic,
@@ -225,4 +253,5 @@ export const epics = [
   connectingEpic,
   sendActionEpic,
   receiveActionEpic,
+  pingingEpic,
 ];
