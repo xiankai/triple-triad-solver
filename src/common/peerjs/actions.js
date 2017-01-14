@@ -2,6 +2,7 @@
 import type { Action, Deps, Peer, DataConnection } from '../types';
 import { Observable } from 'rxjs/Observable';
 import { multiplayerActions } from '../cards/actions';
+import { isBrowser, getParameterByName } from '../utils';
 
 export const startup = (): Action => ({
   type: 'STARTUP',
@@ -57,7 +58,7 @@ const startupEpic = (
   action$: any,
   { peerjs, peerjsServer }: Deps,
 ): Action => {
-  if (typeof window === 'undefined') {
+  if (!isBrowser()) {
     return action$.mapTo({
       type: 'NOT_READY',
     });
@@ -90,6 +91,35 @@ const startupEpic = (
   // from connection, listen to connect or connected actions
   // both should return a completed connection, which starts listening for data
 };
+
+const autoconnectEpic = (
+  action$: any,
+  { getState },
+): Action => action$
+  .ofType('STARTED')
+  .mergeMap(() => {
+    const { peerjs: { peer } } = getState();
+
+    const id = getParameterByName('p');
+
+    if (!peer || !id) {
+      return Observable.of();
+    }
+
+    return Observable.fromPromise(
+      new Promise((resolve) => {
+        try {
+          const conn = peer.connect(id);
+
+          conn
+            .on('open', () => resolve(connected(conn)))
+            .on('error', err => resolve(setError(err.message)));
+        } catch (err) {
+          resolve(setError(err.message));
+        }
+      })
+    );
+  });
 
 const listeningEpic = (
   action$: any,
@@ -190,6 +220,7 @@ const receiveActionEpic = (
 
 export const epics = [
   startupEpic,
+  autoconnectEpic,
   listeningEpic,
   connectingEpic,
   sendActionEpic,
