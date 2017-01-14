@@ -138,7 +138,9 @@ const listeningEpic = (
       new Promise((resolve) => {
         try {
           peer
-            .on('connection', conn => resolve(connected(conn)))
+            .on('connection', (conn) => {
+              conn.on('open', () => resolve(connected(conn)));
+            })
             .on('error', err => resolve(setError(err.message)));
         } catch (err) {
           resolve(setError(err.message));
