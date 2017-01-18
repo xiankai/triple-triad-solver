@@ -11,6 +11,9 @@ const initialState = {
     isPlayer: null,
   }),
   active: 'multi',
+  isPlayerTurn: null,
+  playerRematch: null,
+  opponentRematch: null,
 };
 
 const takeCard = (state, action) => {
@@ -73,6 +76,7 @@ const reducer = (
 
       return {
         ...newState,
+        isPlayerTurn: !newState.isPlayerTurn,
         placedCards: computeBoardStandardResult(placedCards.slice(), card, position, isPlayer),
       };
     }
@@ -80,17 +84,23 @@ const reducer = (
     case 'POPULATE_DECK': {
       const { isPlayer, cards } = action.payload;
 
-      if (isPlayer) {
+      const newState = {
+        ...state,
+        [isPlayer ? 'playersCards' : 'opponentsCards']: cards,
+      };
+
+      // if player is the one to finish the deck last
+      // then flip a coin to see who goes first
+      if (newState.playersCards[0] !== null &&
+          newState.opponentsCards[0] !== null
+      ) {
         return {
-          ...state,
-          playersCards: cards,
-        };
-      } else {
-        return {
-          ...state,
-          opponentsCards: cards,
+          ...newState,
+          isPlayerTurn: isPlayer,
         };
       }
+
+      return newState;
     }
 
     case 'RESET_GAME': {
@@ -98,6 +108,24 @@ const reducer = (
         ...initialState,
         active: state.active,
       };
+    }
+
+    case 'REMATCH': {
+      const { isPlayer, response } = action.payload;
+
+      const newState = {
+        ...state,
+        [isPlayer ? 'playerRematch' : 'opponentRematch']: response,
+      };
+
+      if (newState.playerRematch && newState.opponentRematch) {
+        // rematching, reset the game
+        return {
+          ...initialState,
+        };
+      }
+
+      return newState;
     }
 
     default:

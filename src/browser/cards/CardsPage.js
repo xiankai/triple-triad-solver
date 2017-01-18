@@ -31,6 +31,9 @@ import {
   Flex,
 } from '../app/components';
 import Multiplayer from './Multiplayer';
+import Turns from './Turns';
+import Winner from './Winner';
+import Rematching from './Rematching';
 import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
 
@@ -38,7 +41,7 @@ const generateRandomDeck = () => (new Array(5)).fill(null).map(() => Math.floor(
 
 const determineWinner = (placedCards) => {
   if (placedCards.filter(placedCard => placedCard.card === null).length > 0) {
-    return 'not yet';
+    return '';
   }
 
   const score = placedCards.reduce((score, placedCard) => score + (placedCard.isPlayer ? 1 : -1), 0);
@@ -55,7 +58,7 @@ const determineWinner = (placedCards) => {
     return 'draw';
   }
 
-  return 'not yet';
+  return '';
 };
 
 const Tab = (text, action, current = false) => current ? (
@@ -83,6 +86,7 @@ const CardsPage = ({
   past,
   future,
   winner,
+  isPlayerTurn,
   connected,
   active,
 
@@ -106,27 +110,27 @@ const CardsPage = ({
     </div>
     {
       active === 'multi' &&
-      <Multiplayer />
+      <Multiplayer
+        resetGame={resetGame}
+      />
     }
     <Flex justify="center">
-      <Text
-        bold
-        style={{
-          color: winner === 'player' ? '#4AC8E6' : '#E27062',
-          transform: 'scale(2,1)',
-        }}
-      >
-        {
-          (() => {
-            switch (winner) {
-              case 'player': return 'YOU WIN';
-              case 'opponent': return 'YOU LOSE';
-              case 'draw': return 'DRAW';
-              default: return '';
-            }
-          })()
-        }
-      </Text>
+      {
+        winner &&
+        <Winner winner={winner} isPlayerTurn={isPlayerTurn} />
+      }
+    </Flex>
+    <Flex justify="center">
+      {
+        !winner &&
+        isPlayerTurn !== null &&
+        <Turns isPlayerTurn={isPlayerTurn} />
+      }
+      {
+        winner &&
+        active === 'multi' &&
+        <Rematching />
+      }
     </Flex>
     <Flex>
       {
@@ -171,7 +175,7 @@ const CardsPage = ({
               key={i}
               col={4}
             >
-              <DeckCard key={i} card={card} isPlayer />
+              <DeckCard key={i} card={card} isPlayer canDrag={isPlayerTurn} />
             </Grid>
           )
         }
@@ -195,7 +199,11 @@ const CardsPage = ({
               key={i}
               col={4}
             >
-              <DeckCard card={card} isPlayer={false} />
+              <DeckCard
+                card={card}
+                isPlayer={false}
+                canDrag={active === 'single'}
+              />
             </Grid>
           )
         }

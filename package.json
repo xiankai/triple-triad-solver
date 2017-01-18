@@ -10,7 +10,8 @@
     "jest:watch": "jest --watch",
     "postinstall": "gulp native && gulp build --production",
     "start": "gulp",
-    "test": "gulp test"
+    "test": "gulp test",
+    "firebase": "gulp deploy-firebase"
   },
   "engines": {
     "node": ">=6"

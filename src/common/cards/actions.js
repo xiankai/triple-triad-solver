@@ -38,5 +38,13 @@ export const resetGame = (): Action => ({
   type: 'RESET_GAME',
 });
 
+export const rematch = (isPlayer: boolean, response: boolean): Action => () => ({
+  type: 'REMATCH',
+  payload: {
+    isPlayer,
+    response,
+  },
+});
+
 export const undoableActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK'];
-export const multiplayerActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK'];
+export const multiplayerActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK', 'REMATCH'];

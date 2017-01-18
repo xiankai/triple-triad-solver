@@ -15,6 +15,7 @@ const boxSource = {
       card,
     };
   },
+  canDrag: props => props.canDrag,
   // endDrag: (props, monitor) => {
   //   const { isPlayer, card, takeCard } = props;
   //   if (monitor.didDrop()) {
