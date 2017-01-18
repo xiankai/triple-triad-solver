@@ -23,7 +23,6 @@ import {
   Title,
   View,
 
-  Text,
   Button,
   ButtonOutline,
 
@@ -39,12 +38,18 @@ import BoardCard from './BoardCard';
 
 const generateRandomDeck = () => (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length));
 
-const determineWinner = (placedCards) => {
+const determineWinner = (placedCards, isPlayerTurn) => {
   if (placedCards.filter(placedCard => placedCard.card === null).length > 0) {
     return '';
   }
 
-  const score = placedCards.reduce((score, placedCard) => score + (placedCard.isPlayer ? 1 : -1), 0);
+  let score = placedCards.reduce((score, placedCard) => score + (placedCard.isPlayer ? 1 : -1), 0);
+
+  // if is player's turn, that means player has spent all his cards,
+  // and gets a -1 disadvantage
+  console.log(score);
+  score += isPlayerTurn ? 1 : -1;
+  console.log(score);
 
   if (score > 0) {
     return 'player';
@@ -218,7 +223,7 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
       ...state.cards.present,
       past: state.cards.past.length,
       future: state.cards.future.length,
-      winner: determineWinner(state.cards.present.placedCards),
+      winner: determineWinner(state.cards.present.placedCards, state.cards.present.isPlayerTurn),
       connected: state.peerjs.connection && state.peerjs.connection.open && state.peerjs.connection.peer,
     }),
     {
