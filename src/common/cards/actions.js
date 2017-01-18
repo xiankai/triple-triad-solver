@@ -1,6 +1,14 @@
 /* @flow */
 import type { Action } from '../types';
 
+export const singlePlayer = (): Action => ({
+  type: 'SINGLE_PLAYER',
+});
+
+export const multiPlayer = (): Action => ({
+  type: 'MULTI_PLAYER',
+});
+
 export const takeCard = (isPlayer: boolean, card: number): Action => ({
   type: 'TAKE_CARD',
   payload: {

@@ -12,6 +12,8 @@ import { ActionCreators } from 'redux-undo';
 import cards from '../../common/cards/cards.json';
 import { isMobile } from '../../common/utils';
 import {
+  singlePlayer,
+  multiPlayer,
   populateDeck,
   resetGame,
 } from '../../common/cards/actions';
@@ -23,6 +25,7 @@ import {
 
   Text,
   Button,
+  ButtonOutline,
 
   Grid,
   Flex,
@@ -51,9 +54,27 @@ const determineWinner = (placedCards) => {
   if (score === 0) {
     return 'draw';
   }
+
+  return 'not yet';
 };
 
-const singlePlayer = false;
+const Tab = (text, action, current = false) => current ? (
+  <Button
+    backgroundColor="primary"
+    color="white"
+    big
+  >
+    {text}
+  </Button>
+) : (
+  <ButtonOutline
+    color="primary"
+    big
+    onClick={action}
+  >
+    {text}
+  </ButtonOutline>
+);
 
 const CardsPage = ({
   playersCards,
@@ -63,7 +84,10 @@ const CardsPage = ({
   future,
   winner,
   connected,
+  active,
 
+  singlePlayer,
+  multiPlayer,
   populateDeck,
   resetGame,
   clearHistory,
@@ -76,7 +100,14 @@ const CardsPage = ({
       description="Get the latest scoop on your winning odds against Rowena"
       heading="Triple Triad Solver"
     />
-    <Multiplayer />
+    <div>
+      { Tab('Singleplayer', singlePlayer, active === 'single') }
+      { Tab('Multiplayer', multiPlayer, active === 'multi') }
+    </div>
+    {
+      active === 'multi' &&
+      <Multiplayer />
+    }
     <Flex justify="center">
       <Text
         bold
@@ -99,13 +130,13 @@ const CardsPage = ({
     </Flex>
     <Flex>
       {
-        (singlePlayer || connected) &&
+        (active === 'single' || connected) &&
         <Grid col={4} p={2}>
           <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Player Deck</Button>
         </Grid>
       }
       {
-        singlePlayer &&
+        active === 'single' &&
         <Grid col={4} p={2}>
           <Grid col={4}>
             {
@@ -126,7 +157,7 @@ const CardsPage = ({
         </Grid>
       }
       {
-        singlePlayer &&
+        active === 'single' &&
         <Grid col={4} p={2}>
           <Button onClick={() => populateDeck(false, generateRandomDeck())} backgroundColor="red">Populate Opponent Deck</Button>
         </Grid>
@@ -183,6 +214,8 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
       connected: state.peerjs.connection && state.peerjs.connection.open && state.peerjs.connection.peer,
     }),
     {
+      singlePlayer,
+      multiPlayer,
       populateDeck,
       resetGame,
       clearHistory: ActionCreators.clearHistory,

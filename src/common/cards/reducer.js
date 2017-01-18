@@ -10,6 +10,7 @@ const initialState = {
     card: null,
     isPlayer: null,
   }),
+  active: 'multi',
 };
 
 const takeCard = (state, action) => {
@@ -49,6 +50,20 @@ const reducer = (
   if (!action) return state;
 
   switch (action.type) {
+    case 'SINGLE_PLAYER': {
+      return {
+        ...state,
+        active: 'single',
+      };
+    }
+
+    case 'MULTI_PLAYER': {
+      return {
+        ...state,
+        active: 'multi',
+      };
+    }
+
     case 'TAKE_CARD': return takeCard(state, action);
 
     case 'PLACE_CARD': {
@@ -78,7 +93,12 @@ const reducer = (
       }
     }
 
-    case 'RESET_GAME': return initialState;
+    case 'RESET_GAME': {
+      return {
+        ...initialState,
+        active: state.active,
+      };
+    }
 
     default:
       return state;
