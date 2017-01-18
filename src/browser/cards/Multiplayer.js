@@ -3,9 +3,18 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import {
+  Panel,
+  PanelFooter,
+  Flex,
+  Grid,
+  Space,
+
   Spinner,
   Image,
+
   Input,
+  Button,
+  Tooltip,
 } from '../app/components';
 
 import {
@@ -18,12 +27,30 @@ import {
 import { isBrowser, isMobile } from '../../common/utils';
 
 class Multiplayer extends Component {
+  constructor() {
+    super();
+
+    this.state = { copied: '' };
+  }
+
   componentDidMount() {
     if (typeof window === 'undefined') {
       return;
     }
 
     this.props.startup();
+
+    const clipboard = new window.Clipboard('#share_button');
+
+    clipboard.on('success', () => {
+      this.setState({ copied: 'Copied!' });
+      setTimeout(() => this.setState({ copied: '' }), 5000);
+    });
+
+    clipboard.on('error', () => {
+      this.setState({ copied: 'Can\'t copy - do it manually.' });
+      setTimeout(() => this.setState({ copied: '' }), 5000);
+    });
   }
 
   findOpponent = () => {
@@ -46,62 +73,93 @@ class Multiplayer extends Component {
     const link = `${isBrowser() ? window.location.origin : ''}/cards?p=${peer && peer.id}`;
 
     return (
-      <div>
+      <Panel>
         {
           peer &&
           <div>
             Your ID for this multiplayer session is: { peer.id }
-            <div>
-              Share this link to challenge your friends!
-              <Input
-                value={link}
-                name="link"
-                label="Share Link"
-                readOnly
-                hideLabel
-                autoOff
-              />
+            <Flex align="flex-end">
+              <Grid>
+                <Input
+                  id="share_link"
+                  value={link}
+                  name="link"
+                  label="Share this link to challenge your friends!"
+                  readOnly
+                  autoOff
+                  style={{
+                    marginBottom: 0,
+                    display: 'inline-block',
+                  }}
+                />
+                <Tooltip
+                  title={this.state.copied}
+                  style={{
+                    display: this.state.copied ? 'block' : 'none',
+                  }}
+                >
+                  <Button
+                    id="share_button"
+                    data-clipboard-target="#share_link"
+                    rounded
+                  >
+                    Copy
+                  </Button>
+                </Tooltip>
+              </Grid>
+              <Space x={1} />
               {
-                isMobile &&
-                <div>
+                isMobile() &&
+                <Grid>
                   <a href={`fb-messenger://share?link=${link}`}>
                    <Image src={require('./messenger.png')} height="16px" /> Share link via Facebook Messenger
                   </a>
-                </div>
+                </Grid>
               }
+              <Space x={1} />
               {
-                isMobile &&
-                <div>
+                isMobile() &&
+                <Grid>
                   <a href={`whatsapp://send?text=${isBrowser() ? window.location.origin : ''}/cards?p=${peer.id}`} data-action="share/whatsapp/share">
                    <Image src={require('./whatsapp-icon.png')} height="16px" /> Share link via Whatsapp
                   </a>
-                </div>
+                </Grid>
               }
-            </div>
+            </Flex>
           </div>
         }
-        <div>
-          Enter your opponent's id here:
-          <input type="text" ref={(input) => { this.input = input; }} />
-          <button onClick={this.findOpponent} >Enter</button>
+        <Flex align="flex-end">
+          <Input
+            name="opponent"
+            ref={(input) => { this.input = input; }}
+            label="Or enter your opponent's id here to connect to them"
+            autoOff
+            style={{
+              marginBottom: 0,
+              display: 'inline-block',
+            }}
+          />
+          <Button onClick={this.findOpponent} rounded>Enter</Button>
           { loading && <Spinner /> }
-        </div>
-        Status: {(() => {
-          if (error) {
-            return error;
-          }
+        </Flex>
+        <PanelFooter>
+          Status: {(() => {
+            if (error) {
+              return error;
+            }
 
-          if (connection && connection.open) {
-            return `Connected to ${connection.peer}`;
-          }
+            if (connection && connection.open) {
+              return `Connected to ${connection.peer}`;
+            }
 
-          if (loading) {
-            return `Connecting to ${connectee}`;
-          }
+            if (loading) {
+              return `Connecting to ${connectee}`;
+            }
 
-          return 'Not connected yet.';
-        })()}
-      </div>
+            return 'Not connected yet.';
+          })()}
+        </PanelFooter>
+      </Panel>
     );
   }
 }
