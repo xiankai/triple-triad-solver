@@ -30,7 +30,10 @@ class Multiplayer extends Component {
   constructor() {
     super();
 
-    this.state = { copied: '' };
+    this.state = {
+      opponent: '',
+      copied: '',
+    };
   }
 
   componentDidMount() {
@@ -54,8 +57,8 @@ class Multiplayer extends Component {
   }
 
   findOpponent = () => {
-    if (this.input.value) {
-      this.props.connecting(this.input.value);
+    if (this.state.opponent.length > 0) {
+      this.props.connecting(this.state.opponent);
     } else {
       this.props.setError('No opponent ID specified.');
     }
@@ -128,20 +131,22 @@ class Multiplayer extends Component {
             </Flex>
           </div>
         }
-        <Flex align="flex-end">
-          <Input
-            name="opponent"
-            ref={(input) => { this.input = input; }}
-            label="Or enter your opponent's id here to connect to them"
-            autoOff
-            style={{
-              marginBottom: 0,
-              display: 'inline-block',
-            }}
-          />
-          <Button onClick={this.findOpponent} rounded>Enter</Button>
-          { loading && <Spinner /> }
-        </Flex>
+        {
+          peer &&
+          <Flex align="flex-end">
+            <Input
+              name="opponent"
+              onChange={e => this.setState({ opponent: e.target.value })}
+              label="Or enter your opponent's id here to connect to them"
+              autoOff
+              style={{
+                marginBottom: 0,
+                display: 'inline-block',
+              }}
+            />
+            <Button onClick={this.findOpponent} rounded>Enter</Button>
+          </Flex>
+        }
         <PanelFooter>
           Status: {(() => {
             if (error) {
@@ -153,10 +158,22 @@ class Multiplayer extends Component {
             }
 
             if (loading) {
-              return `Connecting to ${connectee}`;
+              return (
+                <span>
+                  Connecting to { connectee } <Spinner />
+                </span>
+              );
             }
 
-            return 'Not connected yet.';
+            if (!peer) {
+              return (
+                <span>
+                  Starting up the connecting server <Spinner />
+                </span>
+              );
+            }
+
+            return 'Ready to play';
           })()}
         </PanelFooter>
       </Panel>
