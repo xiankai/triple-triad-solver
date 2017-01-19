@@ -5,7 +5,7 @@ import { FormattedMessage, defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   madeByHtml: {
-    defaultMessage: 'Made with love by',
+    defaultMessage: 'A project by ',
     id: 'footer.madeByHtml',
   },
 });
@@ -14,8 +14,8 @@ const AppFooter = () => (
   <Footer>
     <FormattedMessage {...messages.madeByHtml} />
     {'\u00a0'}
-    <Link to="https://twitter.com/steida">
-      steida
+    <Link to="https://github.com/xiankai/triple-triad-solver">
+      @xiankai
     </Link>
   </Footer>
 );

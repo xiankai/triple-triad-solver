@@ -7,7 +7,7 @@ const LinkMessages = defineMessages({
     id: 'app.links.home',
   },
   cards: {
-    defaultMessage: 'Cards',
+    defaultMessage: 'Game',
     id: 'app.links.cards',
   },
   stack: {

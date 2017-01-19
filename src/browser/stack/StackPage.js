@@ -33,7 +33,7 @@ const StackPage = () => (
       </dl>
       <dl>
         <dt>RxJS / Redux-observable</dt>
-        <dd>{ link('reactivex.io/rxjs/manual/index.html') }</dd>
+        <dd>{ link('http://reactivex.io/rxjs/manual/index.html') }</dd>
         <dd>{ link('https://redux-observable.js.org/') }</dd>
         <dd>
           Rx is very useful for dealing with network code in a logical fashion,
