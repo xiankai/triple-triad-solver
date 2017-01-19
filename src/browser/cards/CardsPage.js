@@ -30,6 +30,7 @@ import {
   Flex,
 } from '../app/components';
 import Multiplayer from './Multiplayer';
+import Rules from './Rules';
 import Turns from './Turns';
 import Winner from './Winner';
 import Rematching from './Rematching';
@@ -171,6 +172,9 @@ const CardsPage = ({
           <Button onClick={() => populateDeck(false, generateRandomDeck())} backgroundColor="red">Populate Opponent Deck</Button>
         </Grid>
       }
+    </Flex>
+    <Flex>
+      <Rules />
     </Flex>
     <Flex>
       <Grid col={4} p={2}>

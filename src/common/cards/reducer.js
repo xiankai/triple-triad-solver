@@ -1,7 +1,12 @@
 /* @flow */
 import type { Action, CardsState } from '../types';
-
+import rulesArray from './rules.json';
 import { computeBoardStandardResult } from './logic';
+
+const rules = {};
+rulesArray.forEach((rule) => {
+  rules[rule] = false;
+});
 
 const initialState = {
   playersCards: (new Array(5)).fill(null),
@@ -14,6 +19,7 @@ const initialState = {
   isPlayerTurn: null,
   playerRematch: null,
   opponentRematch: null,
+  rules,
 };
 
 const takeCard = (state, action) => {
@@ -126,6 +132,18 @@ const reducer = (
       }
 
       return newState;
+    }
+
+    case 'TOGGLE_RULE': {
+      const { rule } = action.payload;
+
+      return {
+        ...state,
+        rules: {
+          ...state.rules,
+          [rule]: !state.rules[rule],
+        },
+      };
     }
 
     default:

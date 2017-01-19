@@ -38,11 +38,18 @@ export const resetGame = (): Action => ({
   type: 'RESET_GAME',
 });
 
-export const rematch = (isPlayer: boolean, response: boolean): Action => () => ({
+export const rematch = (isPlayer: boolean, response: boolean): Action => ({
   type: 'REMATCH',
   payload: {
     isPlayer,
     response,
+  },
+});
+
+export const toggleRule = (rule): Action => ({
+  type: 'TOGGLE_RULE',
+  payload: {
+    rule,
   },
 });
 
