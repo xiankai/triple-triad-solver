@@ -6,6 +6,7 @@ import { toggleRule } from '../../common/cards/actions';
 import {
   Panel,
   PanelHeader,
+  PanelFooter,
   Flex,
   Box,
 
@@ -34,26 +35,30 @@ const Rule = ({
 const Rules = ({
   rules,
   disabled,
+  started,
   toggleRule,
 }) => (
   <Panel theme="info">
     <PanelHeader>
-      Ruleset (Pick up to 2)
+      Ruleset
     </PanelHeader>
     <Flex wrap>
       {
         rules.map(({ flag, rule }) => (
-          <Box col={2}>
+          <Box col={2} key={rule}>
             <Rule
               rule={rule}
               handleChange={toggleRule(rule)}
               checked={flag}
-              disabled={disabled}
+              disabled={disabled || started}
             />
           </Box>
         ))
       }
     </Flex>
+    <PanelFooter>
+      Optional. Pick up to 2. The other rules have not been implemented yet.
+    </PanelFooter>
   </Panel>
 );
 

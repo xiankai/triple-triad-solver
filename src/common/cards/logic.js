@@ -1,5 +1,7 @@
 import cards from './cards.json';
 
+
+
 // const cards = (new Array(10))
 //   .fill(null)
 //   .map(() =>
@@ -235,3 +237,5 @@ export const calculate = (grid, playerDeck, opponentDeck, playersTurn, depth = 1
 
   return calculations;
 };
+
+export const generateRandomDeck = () => (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length));

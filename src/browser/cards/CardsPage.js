@@ -7,9 +7,7 @@ import { DragDropContext } from 'react-dnd';
 import TouchBackend from 'react-dnd-touch-backend';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import { ActionCreators } from 'redux-undo';
-
-import cards from '../../common/cards/cards.json';
+import { generateRandomDeck } from '../../common/cards/logic';
 import { isMobile } from '../../common/utils';
 import {
   singlePlayer,
@@ -30,6 +28,7 @@ import {
   Flex,
 } from '../app/components';
 import Multiplayer from './Multiplayer';
+import Singleplayer from './Singleplayer';
 import Rules from './Rules';
 import Turns from './Turns';
 import Winner from './Winner';
@@ -37,7 +36,6 @@ import Rematching from './Rematching';
 import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
 
-const generateRandomDeck = () => (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length));
 
 const determineWinner = (placedCards, isPlayerTurn) => {
   if (placedCards.filter(placedCard => placedCard.card === null).length > 0) {
@@ -87,20 +85,16 @@ const CardsPage = ({
   playersCards,
   opponentsCards,
   placedCards,
-  past,
-  future,
-  winner,
   isPlayerTurn,
-  connected,
   active,
+  started,
+  winner,
+  connected,
 
   singlePlayer,
   multiPlayer,
   populateDeck,
   resetGame,
-  clearHistory,
-  undo,
-  redo,
 }) => (
   <View>
     <Title message="Triple Triad Solver" />
@@ -118,6 +112,7 @@ const CardsPage = ({
         resetGame={resetGame}
       />
     }
+    <Rules started={started} />
     <Flex justify="center">
       {
         winner &&
@@ -127,7 +122,7 @@ const CardsPage = ({
     <Flex justify="center">
       {
         !winner &&
-        isPlayerTurn !== null &&
+        started &&
         <Turns isPlayerTurn={isPlayerTurn} />
       }
       {
@@ -136,44 +131,16 @@ const CardsPage = ({
         <Rematching />
       }
     </Flex>
-    <Flex>
-      {
-        (active === 'single' || connected) &&
-        <Grid col={4} p={2}>
-          <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Player Deck</Button>
-        </Grid>
-      }
-      {
-        active === 'single' &&
-        <Grid col={4} p={2}>
-          <Grid col={4}>
-            {
-              (past + future) > 0 &&
-              <Button onClick={() => resetGame() && clearHistory()} backgroundColor="info">Reset</Button>
-            }
-          </Grid>
-          <Grid col={4}>
-            {
-              past > 0 && <Button onClick={undo} backgroundColor="error">Undo</Button>
-            }
-          </Grid>
-          <Grid col={4}>
-            {
-              future > 0 && <Button onClick={redo} backgroundColor="success">Redo</Button>
-            }
-          </Grid>
-        </Grid>
-      }
-      {
-        active === 'single' &&
-        <Grid col={4} p={2}>
-          <Button onClick={() => populateDeck(false, generateRandomDeck())} backgroundColor="red">Populate Opponent Deck</Button>
-        </Grid>
-      }
-    </Flex>
-    <Flex>
-      <Rules />
-    </Flex>
+    {
+      active === 'multi' &&
+      connected &&
+      !started &&
+      <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Your Deck</Button>
+    }
+    {
+      active === 'single' &&
+      <Singleplayer />
+    }
     <Flex>
       <Grid col={4} p={2}>
         {
@@ -223,8 +190,7 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
   connect(
     (state: State) => ({
       ...state.cards.present,
-      past: state.cards.past.length,
-      future: state.cards.future.length,
+      started: state.cards.present.isPlayerTurn !== null,
       winner: determineWinner(state.cards.present.placedCards, state.cards.present.isPlayerTurn),
       connected: state.peerjs.connection && state.peerjs.connection.open && state.peerjs.connection.peer,
     }),
@@ -233,9 +199,6 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
       multiPlayer,
       populateDeck,
       resetGame,
-      clearHistory: ActionCreators.clearHistory,
-      undo: ActionCreators.undo,
-      redo: ActionCreators.redo,
     }
   )(CardsPage)
 );
