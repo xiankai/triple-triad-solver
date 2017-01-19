@@ -24,7 +24,6 @@ import {
   Button,
   ButtonOutline,
 
-  Grid,
   Flex,
 } from '../app/components';
 import Multiplayer from './Multiplayer';
@@ -33,8 +32,7 @@ import Rules from './Rules';
 import Turns from './Turns';
 import Winner from './Winner';
 import Rematching from './Rematching';
-import DeckCard from './DeckCard';
-import BoardCard from './BoardCard';
+import Board from './Board';
 
 
 const determineWinner = (placedCards, isPlayerTurn) => {
@@ -82,14 +80,12 @@ const Tab = (text, action, current = false) => current ? (
 );
 
 const CardsPage = ({
-  playersCards,
-  opponentsCards,
-  placedCards,
   isPlayerTurn,
-  active,
   started,
   winner,
   connected,
+  isSingleplayer,
+  isMultiplayer,
 
   singlePlayer,
   multiPlayer,
@@ -103,11 +99,11 @@ const CardsPage = ({
       heading="Triple Triad Solver"
     />
     <div>
-      { Tab('Singleplayer', singlePlayer, active === 'single') }
-      { Tab('Multiplayer', multiPlayer, active === 'multi') }
+      { Tab('Singleplayer', singlePlayer, isSingleplayer) }
+      { Tab('Multiplayer', multiPlayer, isMultiplayer) }
     </div>
     {
-      active === 'multi' &&
+      isMultiplayer &&
       <Multiplayer
         resetGame={resetGame}
       />
@@ -127,73 +123,45 @@ const CardsPage = ({
       }
       {
         winner &&
-        active === 'multi' &&
+        isMultiplayer &&
         <Rematching />
       }
     </Flex>
     {
-      active === 'multi' &&
+      isMultiplayer &&
       connected &&
       !started &&
       <Button onClick={() => populateDeck(true, generateRandomDeck())} backgroundColor="blue">Populate Your Deck</Button>
     }
     {
-      active === 'single' &&
+      isSingleplayer &&
       <Singleplayer />
     }
-    <Flex>
-      <Grid col={4} p={2}>
-        {
-          playersCards.map((card, i) =>
-            <Grid
-              key={i}
-              col={4}
-            >
-              <DeckCard key={i} card={card} isPlayer canDrag={isPlayerTurn} />
-            </Grid>
-          )
-        }
-      </Grid>
-      <Grid col={4} p={2}>
-        {
-          placedCards.map((placedCard, i) =>
-            <Grid
-              key={i}
-              col={4}
-            >
-              <BoardCard key={i} {...placedCard} position={i} />
-            </Grid>
-          )
-        }
-      </Grid>
-      <Grid col={4} p={2}>
-        {
-          opponentsCards.map((card, i) =>
-            <Grid
-              key={i}
-              col={4}
-            >
-              <DeckCard
-                card={card}
-                isPlayer={false}
-                canDrag={active === 'single'}
-              />
-            </Grid>
-          )
-        }
-      </Grid>
-    </Flex>
+    <Board
+      isSinglePlayer={isSingleplayer}
+      isPlayerTurn={isPlayerTurn}
+    />
   </View>
 );
 
 export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
   connect(
-    (state: State) => ({
-      ...state.cards.present,
-      started: state.cards.present.isPlayerTurn !== null,
-      winner: determineWinner(state.cards.present.placedCards, state.cards.present.isPlayerTurn),
-      connected: state.peerjs.connection && state.peerjs.connection.open && state.peerjs.connection.peer,
-    }),
+    (state: State) => {
+      const {
+        active,
+        isPlayerTurn,
+        placedCards,
+      } = state.cards.present;
+
+      return {
+        isPlayerTurn,
+        started: isPlayerTurn !== null,
+        winner: determineWinner(placedCards, isPlayerTurn),
+        connected: state.peerjs.connection && state.peerjs.connection.open && state.peerjs.connection.peer,
+        isSingleplayer: active === 'single',
+        isMultiplayer: active === 'multi',
+      };
+    },
     {
       singlePlayer,
       multiPlayer,
