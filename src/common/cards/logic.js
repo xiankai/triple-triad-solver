@@ -1,7 +1,7 @@
 import cards from './cards.json';
 
 
-export const computeBoardStandardResult = (grid, placedCard, position, isPlayer) => {
+export const computeBoardStandardResult = (grid, placedCard, position, isPlayer, rules = []) => {
   const {
     topValue,
     rightValue,
@@ -34,6 +34,7 @@ export const computeBoardStandardResult = (grid, placedCard, position, isPlayer)
     matches.push([leftValue, position - 1, 'rightValue']);
   }
 
+  // vanilla comparisons
   matches.forEach(([val, comparedPos, comparedSide]) => {
     if (!grid[comparedPos] || !grid[comparedPos].card) {
       // no card placed
@@ -42,12 +43,33 @@ export const computeBoardStandardResult = (grid, placedCard, position, isPlayer)
 
     const { card, isPlayer: comparedOwner } = grid[comparedPos];
 
-    // is an opponent and we can overpower them
-    if (isPlayer !== comparedOwner && parseInt(val, 10) > cards[card][comparedSide]) {
-      newGrid[comparedPos] = {
-        card,
-        isPlayer,
-      };
+    // is an opponent
+    if (isPlayer !== comparedOwner) {
+      let canTake = false;
+      let ownValue = parseInt(val, 10);
+      let otherValue = parseInt(cards[card][comparedSide], 10);
+      let swap;
+
+      if (rules.indexOf('Reverse') > -1) {
+        swap = ownValue;
+        ownValue = otherValue;
+        otherValue = swap;
+      }
+
+      if (rules.indexOf('Fallen Ace') > -1 && ownValue === 1 && otherValue === 10) {
+        canTake = true;
+      }
+
+      if (ownValue > otherValue) {
+        canTake = true;
+      }
+
+      if (canTake) {
+        newGrid[comparedPos] = {
+          card,
+          isPlayer,
+        };
+      }
     }
   });
 

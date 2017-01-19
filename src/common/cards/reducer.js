@@ -82,10 +82,17 @@ const reducer = (
       // take card as well
       const { placedCards, ...newState } = takeCard(state, action);
 
+      const rules = [];
+      for (const rule in newState.rules) {
+        if (newState.rules[rule]) {
+          rules.push(rule);
+        }
+      }
+
       return {
         ...newState,
         isPlayerTurn: !newState.isPlayerTurn,
-        placedCards: computeBoardStandardResult(placedCards.slice(), card, position, isPlayer),
+        placedCards: computeBoardStandardResult(placedCards.slice(), card, position, isPlayer, rules),
       };
     }
 
