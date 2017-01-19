@@ -19,15 +19,16 @@ const Rule = ({
   handleChange,
   checked,
   disabled,
+  started,
 }) => (
   <Checkbox
     label={rule}
     name={rule}
     onChange={handleChange}
     checked={checked}
-    disabled={disabled && !checked}
+    disabled={(disabled && !checked) || started}
     style={{
-      opacity: disabled && !checked ? 0.2 : 1,
+      opacity: (disabled || started) && !checked ? 0.2 : 1,
     }}
   />
 );
@@ -50,7 +51,8 @@ const Rules = ({
               rule={rule}
               handleChange={toggleRule(rule)}
               checked={flag}
-              disabled={disabled || started}
+              disabled={disabled}
+              started={started}
             />
           </Box>
         ))
