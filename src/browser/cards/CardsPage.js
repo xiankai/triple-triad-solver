@@ -86,6 +86,7 @@ const CardsPage = ({
   connected,
   isSingleplayer,
   isMultiplayer,
+  readyToPlay,
 
   singlePlayer,
   multiPlayer,
@@ -108,7 +109,10 @@ const CardsPage = ({
         resetGame={resetGame}
       />
     }
-    <Rules started={started} />
+    {
+      readyToPlay &&
+      <Rules started={started} />
+    }
     <Flex justify="center">
       {
         winner &&
@@ -137,10 +141,13 @@ const CardsPage = ({
       isSingleplayer &&
       <Singleplayer />
     }
-    <Board
-      isSinglePlayer={isSingleplayer}
-      isPlayerTurn={isPlayerTurn}
-    />
+    {
+      readyToPlay &&
+      <Board
+        isSinglePlayer={isSingleplayer}
+        isPlayerTurn={isPlayerTurn}
+      />
+    }
   </View>
 );
 
@@ -153,7 +160,7 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
         placedCards,
       } = state.cards.present;
 
-      return {
+      const obj = {
         isPlayerTurn,
         started: isPlayerTurn !== null,
         winner: determineWinner(placedCards, isPlayerTurn),
@@ -161,6 +168,9 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
         isSingleplayer: active === 'single',
         isMultiplayer: active === 'multi',
       };
+
+      obj.readyToPlay = (obj.isMultiplayer && obj.connected) || obj.isSingleplayer;
+      return obj;
     },
     {
       singlePlayer,
