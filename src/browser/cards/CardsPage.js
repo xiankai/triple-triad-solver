@@ -94,10 +94,10 @@ const CardsPage = ({
   resetGame,
 }) => (
   <View>
-    <Title message="Triple Triad Solver" />
+    <Title message="FFXIV Triple Triad Game" />
     <PageHeader
-      description="Get the latest scoop on your winning odds against Rowena"
-      heading="Triple Triad Solver"
+      description="Play solo or with friends, outside of the game!"
+      heading="FFXIV Triple Triad"
     />
     <div>
       { Tab('Singleplayer', singlePlayer, isSingleplayer) }

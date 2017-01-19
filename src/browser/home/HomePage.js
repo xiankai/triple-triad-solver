@@ -9,7 +9,7 @@ import {
 
 const HomePage = () => (
   <View>
-    <Title message="Triple Triad Solver" />
+    <Title message="FFXIV Triple Triad" />
     <PageHeader
       description="Barebones site. Currently only a TT simulator is available."
       heading="Lima's project"

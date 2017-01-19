@@ -24,6 +24,10 @@ const Header = () => (
     <Link bold inverted to="/cards">
       <FormattedMessage {...linksMessages.cards} />
     </Link>
+    <Space x={2} />
+    <Link bold inverted to="/stack">
+      <FormattedMessage {...linksMessages.stack} />
+    </Link>
   </Toolbar>
 );
 
