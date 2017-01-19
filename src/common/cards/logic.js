@@ -10,7 +10,7 @@ export const computeBoardStandardResult = (grid, placedCard, position, isPlayer,
   } = cards[placedCard];
 
   const matches = [];
-  const newGrid = grid.slice();
+  let newGrid = grid.slice();
 
   // place card
   newGrid[position] = {
@@ -34,7 +34,8 @@ export const computeBoardStandardResult = (grid, placedCard, position, isPlayer,
     matches.push([leftValue, position - 1, 'rightValue']);
   }
 
-  // vanilla comparisons
+  const plusCache = new Array(21).fill(null).map(() => []);
+  const sameCache = [];
   matches.forEach(([val, comparedPos, comparedSide]) => {
     if (!grid[comparedPos] || !grid[comparedPos].card) {
       // no card placed
@@ -42,18 +43,24 @@ export const computeBoardStandardResult = (grid, placedCard, position, isPlayer,
     }
 
     const { card, isPlayer: comparedOwner } = grid[comparedPos];
+    let ownValue = parseInt(val, 10);
+    let otherValue = parseInt(cards[card][comparedSide], 10);
+
+    if (rules.indexOf('Plus')) {
+      plusCache[ownValue + otherValue].push(comparedPos);
+    }
+
+    if (rules.indexOf('Same') && ownValue === otherValue) {
+      sameCache.push(comparedPos);
+    }
 
     // is an opponent
     if (isPlayer !== comparedOwner) {
       let canTake = false;
-      let ownValue = parseInt(val, 10);
-      let otherValue = parseInt(cards[card][comparedSide], 10);
-      let swap;
 
       if (rules.indexOf('Reverse') > -1) {
-        swap = ownValue;
-        ownValue = otherValue;
-        otherValue = swap;
+        // swap trick
+        [ownValue, otherValue] = [otherValue, ownValue];
       }
 
       if (rules.indexOf('Fallen Ace') > -1 && ownValue === 1 && otherValue === 10) {
@@ -72,6 +79,35 @@ export const computeBoardStandardResult = (grid, placedCard, position, isPlayer,
       }
     }
   });
+
+  // combo rules
+  const comboRules = [];
+  if (rules.indexOf('Fallen Ace') > -1) {
+    comboRules.push('Fallen Ace');
+  }
+
+  if (rules.indexOf('Reverse') > -1) {
+    comboRules.push('Reverse');
+  }
+
+  const takeOverFunction = (pos) => {
+    const { card } = grid[pos];
+    newGrid[pos] = {
+      card,
+      isPlayer,
+    };
+
+    // combo!!! let's see how deep the rabbit hole goes
+    newGrid = computeBoardStandardResult(newGrid, card, pos, isPlayer, comboRules);
+  };
+
+  plusCache
+    .filter(arr => arr.length >= 2)
+    .map(arr => arr.forEach(takeOverFunction));
+
+  if (sameCache.length >= 2) {
+    sameCache.forEach(takeOverFunction);
+  }
 
   return newGrid;
 };

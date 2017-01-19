@@ -27,8 +27,14 @@ const Card = ({ card, isPlayer, open }) => {
     >
       {
         open
-        ? values.map(({ value, top, left, bottom, right }) =>
-        <div style={{ position: 'absolute', top, left, bottom, right }}>{ value === '10' ? 'A' : value }</div>)
+        ? values.map(({ value, top, left, bottom, right }, key) =>
+          <div
+            key={key}
+            style={{ position: 'absolute', top, left, bottom, right }}
+          >
+            { value === '10' ? 'A' : value }
+          </div>
+        )
         : null
       }
     </div>
