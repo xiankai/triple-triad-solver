@@ -4,8 +4,10 @@ import rulesArray from './rules.json';
 import { computeBoardStandardResult } from './logic';
 
 const rules = {};
-rulesArray.forEach((rule) => {
-  rules[rule] = false;
+rulesArray
+.filter(({ enabled }) => enabled)
+.forEach(({ name }) => {
+  rules[name] = false;
 });
 
 const initialState = {

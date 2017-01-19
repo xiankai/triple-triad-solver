@@ -48,9 +48,7 @@ const determineWinner = (placedCards, isPlayerTurn) => {
 
   // if is player's turn, that means player has spent all his cards,
   // and gets a -1 disadvantage
-  console.log(score);
   score += isPlayerTurn ? 1 : -1;
-  console.log(score);
 
   if (score > 0) {
     return 'player';

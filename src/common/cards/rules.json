@@ -1,17 +1,58 @@
 [
-	"All Open",
-	"Three Open",
-	"Same",
-	"Sudden Death",
-	"Plus",
-	"Random",
-	"Order",
-	"Chaos",
-	"Reverse",
-	"Fallen Ace",
-	"Ascension",
-	"Descension",
-	"Swap",
-	"Roulette",
-	"Combo"
+	{
+		"name": "All Open",
+		"enabled": true
+	},
+	{
+		"name": "Three Open",
+		"enabled": true
+	},
+	{
+		"name": "Same",
+		"enabled": true
+	},
+	{
+		"name": "Sudden Death",
+		"enabled": false
+	},
+	{
+		"name": "Plus",
+		"enabled": true
+	},
+	{
+		"name": "Random",
+		"enabled": false
+	},
+	{
+		"name": "Order",
+		"enabled": false
+	},
+	{
+		"name": "Chaos",
+		"enabled": false
+	},
+	{
+		"name": "Reverse",
+		"enabled": true
+	},
+	{
+		"name": "Fallen Ace",
+		"enabled": true
+	},
+	{
+		"name": "Ascension",
+		"enabled": false
+	},
+	{
+		"name": "Descension",
+		"enabled": false
+	},
+	{
+		"name": "Swap",
+		"enabled": false
+	},
+	{
+		"name": "Roulette",
+		"enabled": false
+	}
 ]
