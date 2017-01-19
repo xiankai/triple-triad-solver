@@ -173,7 +173,7 @@ class Multiplayer extends Component {
               );
             }
 
-            return 'Ready to play';
+            return 'Ready to play. Find an opponent!';
           })()}
         </PanelFooter>
       </Panel>

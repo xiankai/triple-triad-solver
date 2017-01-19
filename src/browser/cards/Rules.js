@@ -57,7 +57,14 @@ const Rules = ({
       }
     </Flex>
     <PanelFooter>
-      Optional. Pick up to 2. The other rules have not been implemented yet.
+      <ul>
+        <li>
+          Optional. Pick up to 2. The other rules have not been implemented yet.
+        </li>
+        <li>
+          Rules can be changed until the game starts when both decks are populated.
+        </li>
+      </ul>
     </PanelFooter>
   </Panel>
 );
