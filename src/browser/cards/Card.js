@@ -3,8 +3,14 @@ import React from 'react';
 
 import cards from '../../common/cards/cards.json';
 
-const Card = ({ card, isPlayer }) => {
+const Card = ({ card, isPlayer, open }) => {
   const { topValue, leftValue, bottomValue, rightValue, number } = cards[card] || {};
+  const values = [
+    { value: topValue, top: '5%', left: '45%' },
+    { value: leftValue, left: '5%', top: '45%' },
+    { value: bottomValue, bottom: '5%', left: '45%' },
+    { value: rightValue, right: '5%', top: '45%' },
+  ];
 
   return (
     <div
@@ -19,10 +25,12 @@ const Card = ({ card, isPlayer }) => {
         // flex: 1,
       }}
     >
-      <div style={{ position: 'absolute', top: '5%', left: '45%' }}>{topValue === '10' ? 'A' : topValue}</div>
-      <div style={{ position: 'absolute', left: '5%', top: '45%' }}>{leftValue === '10' ? 'A' : leftValue}</div>
-      <div style={{ position: 'absolute', bottom: '5%', left: '45%' }}>{bottomValue === '10' ? 'A' : bottomValue}</div>
-      <div style={{ position: 'absolute', right: '5%', top: '45%' }}>{rightValue === '10' ? 'A' : rightValue}</div>
+      {
+        open
+        ? values.map(({ value, top, left, bottom, right }) =>
+        <div style={{ position: 'absolute', top, left, bottom, right }}>{ value === '10' ? 'A' : value }</div>)
+        : null
+      }
     </div>
   );
 };

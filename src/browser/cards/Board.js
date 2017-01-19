@@ -9,10 +9,13 @@ import {
 import DeckCard from './DeckCard';
 import BoardCard from './BoardCard';
 
+let shownCardCounter = 0;
+
 const Board = ({
   playersCards,
   opponentsCards,
   placedCards,
+  rules,
 
   isSinglePlayer,
   isPlayerTurn,
@@ -25,7 +28,13 @@ const Board = ({
             key={i}
             col={4}
           >
-            <DeckCard key={i} card={card} isPlayer canDrag={isPlayerTurn} />
+            <DeckCard
+              key={i}
+              card={card}
+              isPlayer
+              canDrag={isPlayerTurn}
+              open
+            />
           </Grid>
         )
       }
@@ -37,7 +46,12 @@ const Board = ({
             key={i}
             col={4}
           >
-            <BoardCard key={i} {...placedCard} position={i} />
+            <BoardCard
+              key={i}
+              {...placedCard}
+              position={i}
+              open
+            />
           </Grid>
         )
       }
@@ -53,6 +67,11 @@ const Board = ({
               card={card}
               isPlayer={false}
               canDrag={isSinglePlayer}
+              open={
+                isSinglePlayer ||
+                rules['All Open'] ||
+                (rules['Three Open'] && ++shownCardCounter <= 3)
+              }
             />
           </Grid>
         )
