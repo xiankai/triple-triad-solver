@@ -50,8 +50,9 @@ export const toggleRule = (rule): Action => ({
   type: 'TOGGLE_RULE',
   payload: {
     rule,
+    isPlayer: true, // purely for multiplayer filtering, not used
   },
 });
 
 export const undoableActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK'];
-export const multiplayerActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK', 'REMATCH'];
+export const multiplayerActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK', 'REMATCH', 'TOGGLE_RULE'];
