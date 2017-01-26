@@ -8,7 +8,11 @@
 
 ### Calculating possibilities from decks
 - xC5 where 5 <= x <= 168
-  - 1 million possibilities (but actually limited by the only 1 4/5* card rule)
+  - 1 billion possibilities (but actually limited by the only 1 4/5* card rule)
+  - 52 4/5* cards
+  - 116 1-3* cards
+  - now, 7.2 million * 52
+  - for a total of 372 million 
 - yC5 where 5 <= y <= 8
   - 156 possibilities
   - 5 cards from player
@@ -32,6 +36,7 @@
 - Order
   - take away 5!
   - resulting in 43 million possibilities
+  - actually no, you have the option to choose your order beforehand
 
 - Chaos
   - as normal (we cannot tell in advance what will be selected for Chaos)
@@ -54,3 +59,29 @@
 5.2 billion possibilities XD  
 
 A1 a2 B3 b4 C5 c6 D7 d8 E9 = ??? win/draw/loss
+
+# Working backwards
+Useful when halfway through the game - much less possibilities to consider.
+### Last card to be laid by player
+  - Problem space:
+    - Requires a score of 6 to win
+    - Straightforward - only one decision can be made
+    - Compute standard board result
+
+### Second last card to be laid by player
+  - Requires a score of 5 to win
+  - Opponent has 1 card
+  - Player has 2 cards
+
+# Viewing problem in a different light
+- Edges are infinity
+- Each placement of cards increases or reduces the number of edges
+- Player edges can be 0, opponent edges are a positive integer
+- For a given sequence of edges, 
+
+# Idea
+### opponent match up for decks
+- compare each card to opponents cards
+- compare each side
+- assign a value of x card vs y deck
+- combine all x values to get value of x vs y

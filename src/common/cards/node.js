@@ -1,135 +1,136 @@
 const cards = require('./cards.json');
 
-// const cards = (new Array(10))
-//   .fill(null)
-//   .map(() =>
-//     (new Array(4))
-//       .fill(null)
-//       .map(() => Math.ceil(Math.random() * 9))
-//   );
-
-// const cards = [
-//   {
-//     topValue: 9,
-//     rightValue: 9,
-//     leftValue: 9,
-//     bottomValue: 9,
-//   },
-//   {
-//     topValue: 1,
-//     rightValue: 1,
-//     leftValue: 1,
-//     bottomValue: 1,
-//   },
-// ];
-
-// inputs required
-//
-// 1) entire player's deck (or x)
-// 2) entire opponent's deck (or y)
-// ruleset
-
-// then
-// xC5 where 5 <= x <= 168
-// 1 million possibilities (but actually limited by the only 1 4/5* card rule)
-// yC5 where 5 <= y <= 8
-// 56 possibilities
-//
-// 1) 5 cards from player
-// 2) 5 cards from opponent
-
-// rulesets
-// All Open
-// y = 5
-// 1 possibility
-//
-// Three Open
-// yC2 where 2 <= y <= 5
-// 10 possibilities
-//
-// Sudden Death
-// Recursion nightmare
-//
-// Random, Swap
-// calculate on fly
-//
-// Order
-// take away 5!
-// resulting in 43 million possibilities
-//
-// Chaos
-// as normal (we cannot tell in advance what will be selected for Chaos)
-//
-// Reverse, Fallen Ace, Same, Plus, Ascension, Descension
-// only changes the outcome
-
-// then
-// 9 rounds
-// 5x9 possibilities
-// 5x8 possibilities
-// 4x7 possibilities
-// 4x6 possibilities
-// 3x5 possibilities
-// 3x4 possibilities
-// 2x3 possibilities
-// 2x2 possibilities
-// 1x1 possibilities
-// 5!*5!*9!
-// 5.2 billion possibilities XD
-//
-// A1 a2 B3 b4 C5 c6 D7 d8 E9 = ??? win/draw/loss
-
-const computeBoardStandardResult = (grid, placedCard, position, owner) => {
+const computeBoardResult = (grid, placedCard, position, isPlayer, rules = []) => {
   const {
-    topValue: top,
-    rightValue: right,
-    leftValue: bottom,
-    bottomValue: left,
+    topValue,
+    rightValue,
+    leftValue,
+    bottomValue,
   } = cards[placedCard];
 
+  const matches = [];
+  let newGrid = grid.slice();
+
   // place card
-  grid[position] = {
+  newGrid[position] = {
     card: placedCard,
-    owner,
+    isPlayer,
   };
 
-  // compare my top to their bottom
-  if (position < 6 && grid[position - 3]) {
-    const { card, owner: comparedOwner } = grid[position - 3];
+  if (position < 6) {
+    matches.push([bottomValue, position + 3, 'topValue']);
+  }
 
-    if (owner !== comparedOwner && top > cards[card].bottomValue) {
-      grid[position - 3].owner = owner;
+  if (position % 3 < 2) {
+    matches.push([rightValue, position + 1, 'leftValue']);
+  }
+
+  if (position > 2) {
+    matches.push([topValue, position - 3, 'bottomValue']);
+  }
+
+  if (position % 3 > 0) {
+    matches.push([leftValue, position - 1, 'rightValue']);
+  }
+
+  const plusCache = new Array(21).fill(null).map(() => []);
+  const sameCache = [];
+  matches.forEach(([val, comparedPos, comparedSide]) => {
+    if (!grid[comparedPos] || !grid[comparedPos].card) {
+      // no card placed
+      return;
+    }
+
+    const { card, isPlayer: comparedOwner } = grid[comparedPos];
+    let ownValue = parseInt(val, 10);
+    let otherValue = parseInt(cards[card][comparedSide], 10);
+
+    if (rules.indexOf('Plus')) {
+      plusCache[ownValue + otherValue].push(comparedPos);
+    }
+
+    if (rules.indexOf('Same') && ownValue === otherValue) {
+      sameCache.push(comparedPos);
+    }
+
+    // is an opponent
+    if (isPlayer !== comparedOwner) {
+      let canTake = false;
+
+      if (rules.indexOf('Reverse') > -1) {
+        // swap trick
+        [ownValue, otherValue] = [otherValue, ownValue];
+      }
+
+      if (rules.indexOf('Fallen Ace') > -1 && ownValue === 1 && otherValue === 10) {
+        canTake = true;
+      }
+
+      if (ownValue > otherValue) {
+        canTake = true;
+      }
+
+      if (canTake) {
+        newGrid[comparedPos] = {
+          card,
+          isPlayer,
+        };
+      }
+    }
+  });
+
+  // combo rules
+  const comboRules = [];
+  if (rules.indexOf('Fallen Ace') > -1) {
+    comboRules.push('Fallen Ace');
+  }
+
+  if (rules.indexOf('Reverse') > -1) {
+    comboRules.push('Reverse');
+  }
+
+  const takeOverFunction = (pos) => {
+    const { card } = grid[pos];
+    newGrid[pos] = {
+      card,
+      isPlayer,
+    };
+
+    // combo!!! let's see how deep the rabbit hole goes
+    newGrid = computeBoardResult(newGrid, card, pos, isPlayer, comboRules);
+  };
+
+  plusCache
+    .filter(arr => arr.length >= 2)
+    .map(arr => arr.forEach(takeOverFunction));
+
+  if (sameCache.length >= 2) {
+    sameCache.forEach(takeOverFunction);
+  }
+
+  return newGrid;
+};
+
+const getFinalResult = (grid, playersTurn) => {
+  const playersPlacedCards = grid.filter(({ owner }) => owner === 'player');
+
+  if (playersTurn) {
+    // opponent started first
+    if (playersPlacedCards > 4) {
+      return 'win';
+    } else if (playersPlacedCards === 4) {
+      return 'draw';
+    }
+  } else {
+    // player started first
+    if (playersPlacedCards > 5) {
+      return 'win';
+    } else if (playersPlacedCards === 5) {
+      return 'draw';
     }
   }
 
-  // compare my right to their left
-  if (position % 3 < 2 && grid[position + 1]) {
-    const { card, owner: comparedOwner } = grid[position + 1];
-
-    if (owner !== comparedOwner && right > cards[card].leftValue) {
-      grid[position + 1].owner = owner;
-    }
-  }
-
-  // compare my bottom to their top
-  if (position > 2 && grid[position + 3]) {
-    const { card, owner: comparedOwner } = grid[position + 3];
-
-    if (owner !== comparedOwner && bottom > cards[card].topValue) {
-      grid[position + 3].owner = owner;
-    }
-  }
-
-  // compare my left to their right
-  if (position % 3 > 0 && grid[position - 1]) {
-    const { card, owner: comparedOwner } = grid[position - 1];
-
-    if (owner !== comparedOwner && left > cards[card].rightValue) {
-      grid[position - 1].owner = owner;
-    }
-  }
-
-  return grid;
+  return 'loss';
 };
 
 const computeCurrentBoardScore = (grid) => {
@@ -176,7 +177,7 @@ const calculate = (grid, playerDeck, opponentDeck, playersTurn, depth = 1) => {
 
       if (!card) {
         // lets put the card into that slot and make calculations based from there
-        const newGrid = computeBoardStandardResult(grid.slice(), heldCard, j, playersTurn ? 'player' : 'opponent');
+        const newGrid = computeBoardResult(grid.slice(), heldCard, j, playersTurn ? 'player' : 'opponent');
 
         // remove the card that was just placed
         const newDeck = [...deckUsed.slice(0, i), ...deckUsed.slice(i)];
@@ -214,12 +215,14 @@ const calculate = (grid, playerDeck, opponentDeck, playersTurn, depth = 1) => {
   return calculations;
 };
 
-// const k = calculate(
-//   (new Array(9)).fill(null),
-//   [0, 0, 0, 0, 0],
-//   [1, 1, 1, 1, 1],
-//   true,
-//   2
-// );
+const generateRandomDeck = () => (new Array(5)).fill(null).map(() => Math.floor(Math.random() * cards.length));
 
-// console.log(k.cards[0].positions[0].cards[0].positions[1].cards[2]);
+const k = calculate(
+  (new Array(9)).fill(null),
+  generateRandomDeck(),
+  generateRandomDeck(),
+  true,
+  2
+);
+
+console.log(k.cards[0].positions[0].cards[0].positions[1].cards[2]);
