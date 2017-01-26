@@ -43,6 +43,10 @@ class Multiplayer extends Component {
 
     this.props.startup();
 
+    if (!window.Clipboard) {
+      return;
+    }
+
     const clipboard = new window.Clipboard('#share_button');
 
     clipboard.on('success', () => {

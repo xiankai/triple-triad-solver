@@ -2,6 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import {
+  computeBoardScore,
+} from '../../common/cards/logic';
+
+import {
   Grid,
   Flex,
 } from '../app/components';
@@ -19,6 +23,7 @@ const Board = ({
 
   isSinglePlayer,
   isPlayerTurn,
+  solverActivated,
 }) => (
   <Flex>
     <Grid col={4} p={2}>
@@ -81,5 +86,12 @@ const Board = ({
 );
 
 export default connect(
-  (state: State) => state.cards.present
+  (state: State, props) => {
+    const obj = state.cards.present;
+    if (props.solverActivated) {
+      obj.logicalLayout = computeBoardScore(obj.placedCards, obj.playersCards, obj.opponentsCards, obj.isPlayerTurn, obj.rules, 2);
+    }
+
+    return obj;
+  }
 )(Board);

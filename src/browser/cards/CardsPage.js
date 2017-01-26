@@ -7,13 +7,17 @@ import { DragDropContext } from 'react-dnd';
 import TouchBackend from 'react-dnd-touch-backend';
 import HTML5Backend from 'react-dnd-html5-backend';
 
-import { generateRandomDeck } from '../../common/cards/logic';
+import {
+  generateRandomDeck,
+  computeNaiveScore,
+} from '../../common/cards/logic';
 import { isMobile } from '../../common/utils';
 import {
   singlePlayer,
   multiPlayer,
   populateDeck,
   resetGame,
+  toggleSolver,
 } from '../../common/cards/actions';
 
 import {
@@ -40,7 +44,7 @@ const determineWinner = (placedCards, isPlayerTurn) => {
     return '';
   }
 
-  let score = placedCards.reduce((score, placedCard) => score + (placedCard.isPlayer ? 1 : -1), 0);
+  let score = computeNaiveScore(placedCards);
 
   // if is player's turn, that means player has spent all his cards,
   // and gets a -1 disadvantage
@@ -66,6 +70,7 @@ const Tab = (text, action, current = false) => current ? (
     backgroundColor="primary"
     color="white"
     big
+    onClick={action}
   >
     {text}
   </Button>
@@ -87,11 +92,13 @@ const CardsPage = ({
   isSingleplayer,
   isMultiplayer,
   readyToPlay,
+  solverActivated,
 
   singlePlayer,
   multiPlayer,
   populateDeck,
   resetGame,
+  toggleSolver,
 }) => (
   <View>
     <Title message="FFXIV Triple Triad Game" />
@@ -100,8 +107,9 @@ const CardsPage = ({
       heading="FFXIV Triple Triad"
     />
     <div>
-      { Tab('Singleplayer', singlePlayer, isSingleplayer) }
-      { Tab('Multiplayer', multiPlayer, isMultiplayer) }
+      { Tab('Singleplayer', !isSingleplayer ? singlePlayer : () => {}, isSingleplayer) }
+      { Tab('Multiplayer', !isMultiplayer ? multiPlayer : () => {}, isMultiplayer) }
+      { Tab('Solver', toggleSolver, solverActivated) }
     </div>
     {
       isMultiplayer &&
@@ -146,6 +154,7 @@ const CardsPage = ({
       <Board
         isSinglePlayer={isSingleplayer}
         isPlayerTurn={isPlayerTurn}
+        solverActivated={solverActivated}
       />
     }
   </View>
@@ -158,6 +167,7 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
         active,
         isPlayerTurn,
         placedCards,
+        solverActivated,
       } = state.cards.present;
 
       const obj = {
@@ -167,6 +177,7 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
         connected: state.peerjs.connection && state.peerjs.connection.open && state.peerjs.connection.peer,
         isSingleplayer: active === 'single',
         isMultiplayer: active === 'multi',
+        solverActivated,
       };
 
       obj.readyToPlay = (obj.isMultiplayer && obj.connected) || obj.isSingleplayer;
@@ -177,6 +188,7 @@ export default DragDropContext(isMobile() ? TouchBackend : HTML5Backend)(
       multiPlayer,
       populateDeck,
       resetGame,
+      toggleSolver,
     }
   )(CardsPage)
 );

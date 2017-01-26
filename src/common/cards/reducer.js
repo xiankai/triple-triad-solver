@@ -1,7 +1,7 @@
 /* @flow */
 import type { Action, CardsState } from '../types';
 import rulesArray from './rules.json';
-import { computeBoardStandardResult } from './logic';
+import { computeBoardResult } from './logic';
 
 const rules = {};
 rulesArray
@@ -22,6 +22,7 @@ const initialState = {
   playerRematch: null,
   opponentRematch: null,
   rules,
+  solverActivated: false,
 };
 
 const takeCard = (state, action) => {
@@ -92,7 +93,7 @@ const reducer = (
       return {
         ...newState,
         isPlayerTurn: !newState.isPlayerTurn,
-        placedCards: computeBoardStandardResult(placedCards.slice(), card, position, isPlayer, rules),
+        placedCards: computeBoardResult(placedCards.slice(), card, position, isPlayer, rules),
       };
     }
 
@@ -152,6 +153,13 @@ const reducer = (
           ...state.rules,
           [rule]: !state.rules[rule],
         },
+      };
+    }
+
+    case 'TOGGLE_SOLVER': {
+      return {
+        ...state,
+        solverActivated: !state.solverActivated,
       };
     }
 

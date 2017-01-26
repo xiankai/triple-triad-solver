@@ -54,5 +54,9 @@ export const toggleRule = (rule): Action => ({
   },
 });
 
+export const toggleSolver = (): Action => ({
+  type: 'TOGGLE_SOLVER',
+});
+
 export const undoableActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK'];
 export const multiplayerActions = ['TAKE_CARD', 'PLACE_CARD', 'POPULATE_DECK', 'REMATCH', 'TOGGLE_RULE'];

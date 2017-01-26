@@ -1,7 +1,8 @@
 import cards from './cards.json';
 
+export const computeNaiveScore = grid => grid.reduce((score, { isPlayer }) => score + (isPlayer ? 1 : -1), 0);
 
-export const computeBoardStandardResult = (grid, placedCard, position, isPlayer, rules = []) => {
+export const computeBoardResult = (grid, placedCard, position, isPlayer, rules = []) => {
   const {
     topValue,
     rightValue,
@@ -98,7 +99,7 @@ export const computeBoardStandardResult = (grid, placedCard, position, isPlayer,
     };
 
     // combo!!! let's see how deep the rabbit hole goes
-    newGrid = computeBoardStandardResult(newGrid, card, pos, isPlayer, comboRules);
+    newGrid = computeBoardResult(newGrid, card, pos, isPlayer, comboRules);
   };
 
   plusCache
@@ -110,6 +111,62 @@ export const computeBoardStandardResult = (grid, placedCard, position, isPlayer,
   }
 
   return newGrid;
+};
+
+const computeBoardScore = (grid, playersCards, opponentsCards, isPlayerTurn, rules, depth) => {
+  const emptyPositions = grid
+    .map(({ card }, index) => card === null ? index : null) // first store index of empty spaces and null the occupied ones
+    .filter(index => index !== null); // then filter by null so we only get an array of the empty spaces' indices
+  if (emptyPositions.length <= (9 - depth)) {
+    // compute board result
+    const score = computeNaiveScore(grid);
+
+    // if is player's turn, that means player has spent all his cards,
+    // and gets a -1 disadvantage
+    return {
+      score: score + (isPlayerTurn ? 1 : -1),
+    };
+  }
+
+  const deckUsed = isPlayerTurn ? playersCards : opponentsCards;
+  const totalScoreboard = {};
+  let totalScore = 0;
+  let possibilities = 0;
+
+  for (const cardIndex in deckUsed) {
+    const card = deckUsed[cardIndex];
+    totalScoreboard[card] = {
+      score: 0,
+      positions: {},
+    };
+
+    for (const position of emptyPositions) {
+      // see the result of placing the card there
+      const newGrid = computeBoardResult(grid, card, position, isPlayerTurn, rules);
+
+      let newPlayersCards = playersCards.slice();
+      let newOpponentsCards = opponentsCards.slice();
+      if (isPlayerTurn) {
+        newPlayersCards = [].concat(playersCards.slice(0, cardIndex), playersCards.slice(cardIndex + 1));
+      } else {
+        newOpponentsCards = [].concat(opponentsCards.slice(0, cardIndex), opponentsCards.slice(cardIndex + 1));
+      }
+
+      // compute score for the current grid
+      const currentScoreboard = computeBoardScore(newGrid, newPlayersCards, newOpponentsCards, !isPlayerTurn, rules, depth);
+      totalScoreboard[card][position] = currentScoreboard;
+      totalScoreboard[card].score = currentScoreboard.score;
+    }
+
+    totalScoreboard[card].score = totalScoreboard[card].score / emptyPositions.length;
+    totalScore += totalScoreboard[card].score;
+    possibilities++;
+  }
+
+  return {
+    score: totalScore / possibilities,
+    totalScoreboard,
+  };
 };
 
 export const getFinalResult = (grid, playersTurn) => {
@@ -178,7 +235,7 @@ export const calculate = (grid, playerDeck, opponentDeck, playersTurn, depth = 1
 
       if (!card) {
         // lets put the card into that slot and make calculations based from there
-        const newGrid = computeBoardStandardResult(grid.slice(), heldCard, j, playersTurn ? 'player' : 'opponent');
+        const newGrid = computeBoardResult(grid.slice(), heldCard, j, playersTurn ? 'player' : 'opponent');
 
         // remove the card that was just placed
         const newDeck = [...deckUsed.slice(0, i), ...deckUsed.slice(i)];
