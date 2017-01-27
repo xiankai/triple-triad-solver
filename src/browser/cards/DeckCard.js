@@ -9,10 +9,11 @@ import Card from './Card';
 
 const boxSource = {
   beginDrag: (props) => {
-    const { isPlayer, card } = props;
+    const { isPlayer, card, logicalLayout } = props;
     return {
       isPlayer,
       card,
+      logicalLayout,
     };
   },
   canDrag: props => props.canDrag,

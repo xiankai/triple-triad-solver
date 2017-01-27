@@ -41,7 +41,7 @@ const Board = ({
               isPlayer
               canDrag={isPlayerTurn}
               open
-              score={logicalLayout && logicalLayout[card] && logicalLayout[card].score}
+              logicalLayout={logicalLayout && logicalLayout[card]}
             />
           </Grid>
         )
@@ -59,6 +59,7 @@ const Board = ({
               {...placedCard}
               position={i}
               open
+              logicalLayout={logicalLayout}
             />
           </Grid>
         )
@@ -80,6 +81,7 @@ const Board = ({
                 rules['All Open'] ||
                 (rules['Three Open'] && ++shownCardCounter <= 3)
               }
+              logicalLayout={logicalLayout && logicalLayout[card]}
             />
           </Grid>
         )

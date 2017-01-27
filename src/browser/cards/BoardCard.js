@@ -16,9 +16,17 @@ const dropTarget = {
   canDrop: props => !props.card,
 };
 
-const BoardCard = ({ connectDropTarget, ...props }) => connectDropTarget(
+const BoardCard = ({ connectDropTarget, canDrop, item, ...props }) => connectDropTarget(
   <div>
-    <Card {...props} />
+    <Card
+      {...props}
+      logicalLayout={
+        canDrop &&
+        item &&
+        item.logicalLayout &&
+        item.logicalLayout[props.position]
+      }
+    />
   </div>
 );
 
@@ -35,6 +43,7 @@ export default connect(
       connectDropTarget: connect.dropTarget(),
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),
+      item: monitor.getItem(),
     })
   )(BoardCard)
 );
