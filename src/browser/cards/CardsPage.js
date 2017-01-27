@@ -154,6 +154,7 @@ const CardsPage = ({
       <Board
         isSinglePlayer={isSingleplayer}
         isPlayerTurn={isPlayerTurn}
+        started={started}
         solverActivated={solverActivated}
       />
     }

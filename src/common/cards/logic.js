@@ -1,5 +1,16 @@
 import cards from './cards.json';
 
+export const getCurrentRules = (ruleObj) => {
+  const rules = [];
+  for (const rule in ruleObj) {
+    if (ruleObj[rule]) {
+      rules.push(rule);
+    }
+  }
+
+  return rules;
+};
+
 export const computeNaiveScore = grid => grid.reduce((score, { isPlayer }) => score + (isPlayer ? 1 : -1), 0);
 
 export const computeBoardResult = (grid, placedCard, position, isPlayer, rules = []) => {
@@ -113,11 +124,11 @@ export const computeBoardResult = (grid, placedCard, position, isPlayer, rules =
   return newGrid;
 };
 
-const computeBoardScore = (grid, playersCards, opponentsCards, isPlayerTurn, rules, depth) => {
+export const computeBoardScore = (grid, playersCards, opponentsCards, isPlayerTurn, rules, depth) => {
   const emptyPositions = grid
     .map(({ card }, index) => card === null ? index : null) // first store index of empty spaces and null the occupied ones
     .filter(index => index !== null); // then filter by null so we only get an array of the empty spaces' indices
-  if (emptyPositions.length <= (9 - depth)) {
+  if (emptyPositions.length <= 0 || depth <= 0) {
     // compute board result
     const score = computeNaiveScore(grid);
 
@@ -135,6 +146,10 @@ const computeBoardScore = (grid, playersCards, opponentsCards, isPlayerTurn, rul
 
   for (const cardIndex in deckUsed) {
     const card = deckUsed[cardIndex];
+    if (!card) {
+      continue; // if no card, don't bother evaluating
+    }
+
     totalScoreboard[card] = {
       score: 0,
       positions: {},
@@ -153,9 +168,9 @@ const computeBoardScore = (grid, playersCards, opponentsCards, isPlayerTurn, rul
       }
 
       // compute score for the current grid
-      const currentScoreboard = computeBoardScore(newGrid, newPlayersCards, newOpponentsCards, !isPlayerTurn, rules, depth);
+      const currentScoreboard = computeBoardScore(newGrid, newPlayersCards, newOpponentsCards, !isPlayerTurn, rules, --depth);
       totalScoreboard[card][position] = currentScoreboard;
-      totalScoreboard[card].score = currentScoreboard.score;
+      totalScoreboard[card].score += currentScoreboard.score;
     }
 
     totalScoreboard[card].score = totalScoreboard[card].score / emptyPositions.length;

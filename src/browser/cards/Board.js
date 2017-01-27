@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import {
+  getCurrentRules,
   computeBoardScore,
 } from '../../common/cards/logic';
 
@@ -23,7 +24,8 @@ const Board = ({
 
   isSinglePlayer,
   isPlayerTurn,
-  solverActivated,
+
+  logicalLayout,
 }) => (
   <Flex>
     <Grid col={4} p={2}>
@@ -39,6 +41,7 @@ const Board = ({
               isPlayer
               canDrag={isPlayerTurn}
               open
+              score={logicalLayout && logicalLayout[card] && logicalLayout[card].score}
             />
           </Grid>
         )
@@ -88,8 +91,17 @@ const Board = ({
 export default connect(
   (state: State, props) => {
     const obj = state.cards.present;
-    if (props.solverActivated) {
-      obj.logicalLayout = computeBoardScore(obj.placedCards, obj.playersCards, obj.opponentsCards, obj.isPlayerTurn, obj.rules, 2);
+
+    obj.logicalLayout = {};
+    if (props.solverActivated && props.started) {
+      obj.logicalLayout = computeBoardScore(
+        obj.placedCards,
+        obj.playersCards,
+        obj.opponentsCards,
+        obj.isPlayerTurn,
+        getCurrentRules(obj.rules),
+        2
+      ).totalScoreboard;
     }
 
     return obj;

@@ -153,6 +153,11 @@ const computeBoardScore = (grid, playersCards, opponentsCards, isPlayerTurn, rul
 
   for (const cardIndex in deckUsed) {
     const card = deckUsed[cardIndex];
+    totalScoreboard[card] = {
+      score: 0,
+      positions: {},
+    };
+
     for (const position of emptyPositions) {
       // see the result of placing the card there
       const newGrid = computeBoardResult(grid, card, position, isPlayerTurn, rules);
@@ -167,10 +172,13 @@ const computeBoardScore = (grid, playersCards, opponentsCards, isPlayerTurn, rul
 
       // compute score for the current grid
       const currentScoreboard = computeBoardScore(newGrid, newPlayersCards, newOpponentsCards, !isPlayerTurn, rules, depth);
-      totalScoreboard[`placing ${card} at ${position}`] = currentScoreboard;
-      totalScore += currentScoreboard.score;
-      possibilities++;
+      totalScoreboard[card].positions[position] = currentScoreboard;
+      totalScoreboard[card].score += currentScoreboard.score;
     }
+
+    totalScoreboard[card].score = totalScoreboard[card].score / emptyPositions.length;
+    totalScore += totalScoreboard[card].score;
+    possibilities++;
   }
 
   return {

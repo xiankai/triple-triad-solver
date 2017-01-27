@@ -3,13 +3,14 @@ import React from 'react';
 
 import cards from '../../common/cards/cards.json';
 
-const Card = ({ card, isPlayer, open }) => {
+const Card = ({ card, isPlayer, open, score }) => {
   const { topValue, leftValue, bottomValue, rightValue, number } = cards[card] || {};
   const values = [
     { value: topValue, top: '5%', left: '45%' },
     { value: leftValue, left: '5%', top: '45%' },
     { value: bottomValue, bottom: '5%', left: '45%' },
     { value: rightValue, right: '5%', top: '45%' },
+    { value: score, left: '35%', top: '45%', color: 'lawngreen' },
   ];
 
   return (
@@ -27,10 +28,10 @@ const Card = ({ card, isPlayer, open }) => {
     >
       {
         open
-        ? values.map(({ value, top, left, bottom, right }, key) =>
+        ? values.map(({ value, ...style }, key) =>
           <div
             key={key}
-            style={{ position: 'absolute', top, left, bottom, right }}
+            style={{ position: 'absolute', ...style }}
           >
             { value === '10' ? 'A' : value }
           </div>

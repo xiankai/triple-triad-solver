@@ -1,7 +1,10 @@
 /* @flow */
 import type { Action, CardsState } from '../types';
 import rulesArray from './rules.json';
-import { computeBoardResult } from './logic';
+import {
+  getCurrentRules,
+  computeBoardResult,
+} from './logic';
 
 const rules = {};
 rulesArray
@@ -83,12 +86,7 @@ const reducer = (
       // take card as well
       const { placedCards, ...newState } = takeCard(state, action);
 
-      const rules = [];
-      for (const rule in newState.rules) {
-        if (newState.rules[rule]) {
-          rules.push(rule);
-        }
-      }
+      const rules = getCurrentRules(newState.rules);
 
       return {
         ...newState,
