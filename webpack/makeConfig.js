@@ -2,6 +2,7 @@
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import WebpackIsomorphicToolsPlugin from 'webpack-isomorphic-tools/plugin';
+import OfflinePlugin from 'offline-plugin';
 import autoprefixer from 'autoprefixer';
 import config from '../src/server/config';
 import constants from './constants';
@@ -155,6 +156,7 @@ const makeConfig = (options) => {
           // }]),
         );
       }
+      plugins.push(new OfflinePlugin());
       return plugins;
     })(),
     postcss: () => [autoprefixer({ browsers: 'last 2 version' })],

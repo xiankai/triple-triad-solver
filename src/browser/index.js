@@ -47,3 +47,5 @@ if (!window.Intl) {
 } else {
   onWindowIntl();
 }
+
+require('offline-plugin/runtime').install();

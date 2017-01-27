@@ -2448,7 +2448,7 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
 
-ejs@^2.3.1:
+ejs@^2.3.1, ejs@^2.3.4:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.5.3.tgz#bfeae1e2f7fa51c4527769fcaa14c5ca73eb5e47"
 
@@ -5778,6 +5778,16 @@ object.omit@^2.0.0, object.omit@~2.0.0:
   dependencies:
     for-own "^0.1.4"
     is-extendable "^0.1.1"
+
+offline-plugin@^4.5.5:
+  version "4.5.5"
+  resolved "https://registry.yarnpkg.com/offline-plugin/-/offline-plugin-4.5.5.tgz#484b7db32497f1813a0b3e7c931a4cc8fc9563ec"
+  dependencies:
+    deep-extend "^0.4.0"
+    ejs "^2.3.4"
+    loader-utils "0.2.x"
+    minimatch "^3.0.3"
+    slash "^1.0.0"
 
 on-finished@~2.3.0:
   version "2.3.0"
