@@ -4,6 +4,7 @@
   "//": "Check all github.com/este/este#dev-tasks",
   "scripts": {
     "build": "gulp build",
+    "html": "gulp to-html",
     "flow": "flow",
     "install": "gulp native-fix",
     "jest": "jest",
@@ -77,6 +78,7 @@
     "nconf": "^0.8.1",
     "nodemon": "^1.8.1",
     "offline-plugin": "^4.5.5",
+    "peerjs": "https://github.com/xiankai/peerjs.git",
     "postcss-loader": "^1.1.0",
     "ramda": "^0.22.1",
     "raven-js": "^3.0.3",
@@ -122,6 +124,7 @@
     "webpack-dev-middleware": "^1.2.0",
     "webpack-hot-middleware": "^2.8.1",
     "webpack-isomorphic-tools": "^2.2.24",
+    "webrtc-adapter": "^3.1.6",
     "yargs": "^6.0.0"
   }
 }
