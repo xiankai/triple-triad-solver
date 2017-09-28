@@ -12,7 +12,9 @@
     "postinstall": "gulp native && gulp build --production",
     "start": "gulp",
     "test": "gulp test",
-    "firebase": "gulp deploy-firebase"
+    "firebase": "gulp deploy-firebase",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "engines": {
     "node": ">=6"
@@ -125,6 +127,8 @@
     "webpack-hot-middleware": "^2.8.1",
     "webpack-isomorphic-tools": "^2.2.24",
     "webrtc-adapter": "^3.1.6",
-    "yargs": "^6.0.0"
-  }
+    "yargs": "^6.0.0",
+    "snyk": "^1.41.1"
+  },
+  "snyk": true
 }
