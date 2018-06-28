@@ -12,7 +12,9 @@
     "postinstall": "gulp native && gulp build --production",
     "start": "gulp",
     "test": "gulp test",
-    "firebase": "gulp deploy-firebase"
+    "firebase": "gulp deploy-firebase",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "engines": {
     "node": ">=6"
@@ -91,7 +93,7 @@
     "react-gravatar": "^2.4.4",
     "react-helmet": "^3.0.0",
     "react-intl": "^2.1.2",
-    "react-native": "0.39.0",
+    "react-native": "0.39.1",
     "react-native-fbsdk": "^0.4.0",
     "react-native-i18n": "^0.1.1",
     "react-native-side-menu": "^0.20.0",
@@ -125,6 +127,8 @@
     "webpack-hot-middleware": "^2.8.1",
     "webpack-isomorphic-tools": "^2.2.24",
     "webrtc-adapter": "^3.1.6",
-    "yargs": "^6.0.0"
-  }
+    "yargs": "^6.0.0",
+    "snyk": "^1.85.0"
+  },
+  "snyk": true
 }
