@@ -105,7 +105,7 @@
     "redux-logger": "^2.7.4",
     "redux-observable": "^0.12.2",
     "redux-persist": "4.0.0-beta1",
-    "redux-undo": "beta",
+    "redux-undo": "1.0.0",
     "reflexbox": "^2.1.0",
     "regenerator": "^0.9.5",
     "regenerator-runtime": "^0.10.0",
