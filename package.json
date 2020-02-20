@@ -76,7 +76,7 @@
     "localforage": "^1.4.3",
     "make-error": "^1.0.4",
     "nconf": "^0.8.1",
-    "nodemon": "^1.8.1",
+    "nodemon": "^1.14.11",
     "offline-plugin": "^4.5.5",
     "peerjs": "https://github.com/xiankai/peerjs.git",
     "postcss-loader": "^1.1.0",
