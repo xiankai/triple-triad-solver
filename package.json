@@ -21,7 +21,7 @@
     "autoprefixer": "^6.1.0",
     "babel-core": "^6.6.0",
     "babel-eslint": "^7.0.0",
-    "babel-jest": "17.0.2",
+    "babel-jest": "25.1.0",
     "babel-loader": "^6.2.0",
     "babel-plugin-react-intl": "^2.1.1",
     "babel-plugin-react-transform": "^2.0.0",
@@ -71,7 +71,7 @@
     "intl-relativeformat": "^1.1.0",
     "invariant": "^2.1.2",
     "ip": "^1.0.2",
-    "jest": "17.0.3",
+    "jest": "24.0.0",
     "json-loader": "^0.5.4",
     "localforage": "^1.4.3",
     "make-error": "^1.0.4",
@@ -91,7 +91,7 @@
     "react-gravatar": "^2.4.4",
     "react-helmet": "^3.0.0",
     "react-intl": "^2.1.2",
-    "react-native": "0.39.0",
+    "react-native": "0.60.0",
     "react-native-fbsdk": "^0.4.0",
     "react-native-i18n": "^0.1.1",
     "react-native-side-menu": "^0.20.0",
@@ -125,6 +125,6 @@
     "webpack-hot-middleware": "^2.8.1",
     "webpack-isomorphic-tools": "^2.2.24",
     "webrtc-adapter": "^3.1.6",
-    "yargs": "^6.0.0"
+    "yargs": "^10.0.0"
   }
 }
